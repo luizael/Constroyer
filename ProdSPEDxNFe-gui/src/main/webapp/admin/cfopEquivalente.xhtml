@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition template="/layout/masterlayout.xhtml"
+        xmlns="http://www.w3.org/1999/xhtml" 
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:p="http://primefaces.org/ui">
+    <ui:define name="titulo">De-Para CFOP</ui:define>    
+    <ui:define name="tituloConteudo">De-Para CFOP</ui:define>
+    <ui:define name="head">
+        <h:outputScript name="js/cfopEquivalente.js" />
+    </ui:define>
+    <ui:define name="conteudo">        
+        <div id="divForm">
+            <div>Digite o CFOP e aguarde o sistema autocompletar, só entao selecione o CFOP correspondente para continuar</div>
+            <table>
+                <tr>
+                    <td>Código De:</td>
+                    <td>
+                        <input id="hdnIdCfopDe" type="hidden" />
+                        <input id="txtCodigoDe" type="text" style="width: 350px" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Código Para:</td>
+                    <td>
+                        <input id="hdnIdCfopPara" type="hidden" />
+                        <input id="txtCodigoPara" type="text" style="width: 350px" />
+                    </td>
+                </tr>               
+            </table>
+        </div>
+        <input id="btnNovo" type="button" value="Novo" />
+        <table id="tblGrid" style="z-index: 0"></table>
+        <div id="divPagerGrid" style="z-index: 0"></div>        
+    </ui:define>
+</ui:composition>

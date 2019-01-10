@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Constroyer - <ui:insert name="titulo" /></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>         
+        <meta name="_csrf_header" content="${_csrf.headerName}"/>
+        <meta name="_csrf" content="${_csrf.token}"/>        
+        <h:outputStylesheet name="css/custom-theme/jquery-ui-1.10.4.custom.css" />
+        <h:outputStylesheet name="css/ui.jqgrid.css" />   
+        <h:outputStylesheet name="css/jquery.jscrollpane.css" /> 
+        <h:outputStylesheet name="css/Site.css" />    
+        <h:outputStylesheet name="css/relacionamentoManual.css" />  
+        <h:outputStylesheet name="css/DebitoCredito.css" />    
+        <style type="text/css">
+            .msgErro 
+            {
+                color: red;
+            }
+            
+            #loading {
+                font-size: smaller;
+                width: 80px;
+                height: 15px;
+                position: fixed;
+                right: 2px;
+                top: 0px;
+                border: 1px solid #000000;
+                padding: 1px;
+                background-color: #BCDB6E;
+                color: #ffffff;
+            }
+        </style>
+        <script language="javascript" type="text/javascript">
+            var contextPath = "#{request.contextPath}";
+        </script>
+        <h:outputScript name="js/jquery-1.11.1.min.js" />
+        <h:outputScript name="js/jquery-ui-1.10.4.custom.min.js" />
+        <h:outputScript name="js/i18n/grid.locale-pt-br.js" />
+        <h:outputScript name="js/jquery.jqGrid.min.js" />
+        <h:outputScript name="js/Utils.js" />
+        <h:outputScript name="js/prodspedxnfe.js" />
+        <h:outputScript name="js/jquery.jscrollpane.min.js" />
+        <h:outputScript name="js/relacionamentoManual.js" />
+        <ui:insert name="head" />
+    </h:head>
+    <h:body>
+        <div id="logo"></div>    
+        <div id="">
+            <ui:insert name="conteudoBase" />        
+            <div id="loading">Carregando...</div>
+        </div>
+    </h:body>
+</html>

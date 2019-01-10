@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC 
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <!-- *********************inicio pool Tomcat ******************************-->    
+    <!-- Postgres   -->
+    <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+    
+    <!-- Mysql 
+    <property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+    -->
+    <!-- datasource --> 
+    <property name="connection.datasource">java:/comp/env/jdbc/ConstroyerDB</property> 
+    
+    <!-- *********************fim pool Tomcat ******************************-->  
+    <!-- LOCAL  utilizar conexão sem o pool do tomcat    
+    <property name="connection.url">jdbc:postgresql://192.169.231.223/constroyer</property>
+    <property name="connection.username">postgres</property>
+    <property name="connection.password">Q1w2e3@2014</property> --> 
+   
+    
+    <!-- Usando as configurações do C3PO para pool de conexões -->
+    <property name="c3p0.min_size">5</property>
+    <property name="c3p0.max_size">20</property>
+    <property name="c3p0.timeout">0</property>
+    <property name="c3p0.max_statements">50</property>
+    <property name="c3p0.idle_test_period">3000</property>
+
+    <!-- Configurações de debug -->
+    <property name="show_sql">true</property>
+    <property name="format_sql">true</property>
+    <property name="generate_statistics">false</property>
+    <property name="use_sql_comments">false</property>
+    
+    <!-- --><property name="hibernate.current_session_context_class">thread</property> 
+  </session-factory>
+</hibernate-configuration>

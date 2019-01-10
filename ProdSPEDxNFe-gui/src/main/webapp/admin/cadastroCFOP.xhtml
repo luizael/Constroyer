@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/masterlayout.xhtml"
+        xmlns="http://www.w3.org/1999/xhtml" 
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:p="http://primefaces.org/ui">
+    <ui:define name="titulo">Cadastro de CFOP</ui:define>    
+    <ui:define name="tituloConteudo">Cadastro de CFOP</ui:define>
+    <ui:define name="head">
+        <h:outputScript name="js/cadastroCFOP.js" /> 
+    </ui:define>
+    <ui:define name="conteudo">
+        <h:form>
+            <div id="idFormularioCFOP" >
+                <input type="hidden" id="txtHdnIdCFOP" />
+                <input type="hidden" id="hdnIdCFOPEquivalente" />
+                <table>
+                     <tr>
+                         <td><label>Código:</label></td>
+                        <td><input type="text" id="txtCodigo"/></td>
+                    </tr>
+                    <tr>
+                         <td><label>Nome:</label></td>
+                         <td><input type="text" size="79" id="txtNome" /></td>
+                    </tr>
+                    <tr>
+                         <td><label>Descrição:</label></td>
+                         <td><textArea cols="80" rows="3" id="txtDescricao"></textArea></td>
+                    </tr>                    
+                </table>
+            </div>
+            <input type="button" value="Novo"  id="btnNovo" onclick="CFOP_novo();return false"/> 
+            <table id="jqGrideCFOP" style="z-index: 0" ></table>
+            <div id="jqGrideCFOPPage" style="z-index: 0"></div>  
+        </h:form>            
+    </ui:define>
+</ui:composition>
+

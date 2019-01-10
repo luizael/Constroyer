@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition  template="/layout/masterlayout.xhtml"
+        xmlns="http://www.w3.org/1999/xhtml" 
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:p="http://primefaces.org/ui">
+    <ui:define name="titulo">Relatórios</ui:define>    
+    <ui:define name="tituloConteudo">Relatórios</ui:define>
+    <ui:define name="head">
+        <h:outputScript name="js/excellentexport.js" />
+        <h:outputScript name="js/relatorioCreditoDebito.js" />
+        <script language="javascript" type="text/javascript">
+            // <![CDATA[     
+            var RPF_url = "#{request.contextPath}/ws/relDebCreditoWS/";
+            var RPF_tipo ="";
+            var RPF_TituloRelatorio ="Relatorios de Divergencia";
+            var RPF_caminhoSped ="";
+            var RPF_caminhoNFe = "";
+            var RPF_caminhoNFCe = "";
+            var RPF_caminhoCFe = "";
+            var RCF_caminhoExel ="";
+            indexVars.url = RPF_url;
+            var loadTitulo = "";
+            $(document).ready(function () {
+                RPF_toogleFormulario();
+                $("#divNav").dialog({
+                    title: "Navegador de Pastas e Arquivos",
+                    autoOpen: false,
+                    width: 811, 
+                    height: 595,
+                     position: { my: "center center", at: "center center", of: window },
+                });
+
+                $(indexVars.divBarraProgresso).dialog({
+                    title: "Progresso de Relatório",
+                    autoOpen: false,
+                    width: 811, 
+                    height: 200,
+                    modal: true,
+                     position: { my: "center center", at: "center center", of: window },
+                    beforeClose:function(event, ui){
+                        if($(this).dialog("isOpen")===true){
+                            showMessage("Atenção","Deseja fechar a barra progresso?",{ 
+                                "Sim": function () {
+                                    $(this).dialog("close");
+                                },
+                                "Nao":function(){
+                                    $(this).dialog("close");
+                                    $(indexVars.divBarraProgresso).dialog("open");
+                                }
+                            });
+                        }
+                    }
+                });                
+                $("#informacoesParaSalvar").dialog({
+                   title:"Aguarde...",
+                   autoOpen: false,
+                   width: 811, 
+                   height: 200,
+                   modal: true,
+                   position: { my: "center bottom", at: "center center", of: window },
+                   beforeClose:function(event, ui){
+                        if($(this).dialog("isOpen")===true){
+                            showMessage("Atenção","Aguarde o final do processo",{ 
+                                "Sim": function () {
+                                    $(this).dialog("close");
+                                    if(html.liberarDialog){
+                                        $("#informacoesParaSalvar").dialog("close");
+                                    }else{
+                                         $("#informacoesParaSalvar").dialog("open");
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+                });               
+                 $('#dialogUploadExel').dialog({
+                   autoOpen: false,
+                   width: 811,              
+                   modal: true,
+                    position: { my: "center center", at: "center center", of: window },
+                   buttons:[
+                                {
+                                    id:"btnOkExel",
+                                    text:"Ok",
+                                    click:function(){ 
+                                        $("input[type='radio'][name=radioImportacao]").each(function(){ 
+                                             if($(this).is(':checked')){
+                                               $('#dialogUploadExel').dialog("close");
+                                             }
+                                        });
+                                    }
+                                }                            
+                            ]
+                });                
+                $(indexVars.barraProgresso).progressbar({
+                    value: 0,                    
+                    complete: function() {
+                        $(indexVars.labelProgresso).text( "Pronto!" );
+                    }
+                });    
+                $("#loading").click(function(){
+                    $(indexVars.divBarraProgresso).dialog("open");
+                });
+                $("#btnNavCaminhoSPED").click(function () {
+                    RPF_caminhoSped = "#{relCredDebBackBean.tfCaminhoArquivoSPED.clientId.replace(":", "\\\\:")}";
+                    abrirNavegador("divNav", RPF_caminhoSped, "f", "divNav");
+                    //abrirNavegador("divNav", "#\{relCredDebBackBean.tfCaminhoArquivoSPED.clientId.replace(":", "\\\\:")}", "f", "divNav");
+                    //alert(" -- >" + RPF_caminhoSped);
+                });                
+                $("#btnNavCaminhoDirXMLsNFes").click(function () {
+                    RPF_caminhoNFe = "#{relCredDebBackBean.tfCaminhoDirXMLsNFes.clientId.replace(":", "\\\\:")}";
+                    //abrirNavegador("divNav", "#z{relCredDebBackBean.tfCaminhoDirXMLsNFes.clientId.replace(":", "\\\\:")}", "d", "divNav");
+                    abrirNavegador("divNav", RPF_caminhoNFe, "d", "divNav");
+                });                
+                $("#btnNavCaminhoDirXMLsNFCe").click(function(){
+                    RPF_caminhoNFCe ="#{relCredDebBackBean.tfCaminhoDirXMLsNFCes.clientId.replace(":", "\\\\:")}";
+                    //abrirNavegador("divNav", "#\{relCredDebBackBean.tfCaminhoDirXMLsNFCes.clientId.replace(":", "\\\\:")}", "d", "divNav");
+                    abrirNavegador("divNav", RPF_caminhoNFCe, "d", "divNav");
+                });
+                $("#btnNavCaminhoDirXMLsCFe").click(function(){ 
+                    RPF_caminhoCFe ="#{relCredDebBackBean.tfCaminhoDirXMLsCFes.clientId.replace(":", "\\\\:")}";
+                    //abrirNavegador("divNav", "#\{relCredDebBackBean.tfCaminhoDirXMLsCFes.clientId.replace(":", "\\\\:")}", "d", "divNav");
+                    abrirNavegador("divNav", RPF_caminhoCFe, "d", "divNav");
+                });
+                $("#btGerarRelatorio").click(function(){
+                    var atualizar = $("#atualizarWs").prop("checked")?"sim":"nao";
+                    if(atualizar == "sim"){
+                     showMessage("Atenção", "Deseja realmente atualizar a base?", 
+                                    { 
+                                        "Sim": function () { 
+                                            $(this).dialog("close"); 
+                                            if($("#radioExel").is(':checked')){   
+                                                if(RPF_caminhoSped != ""){
+                                                     html.registrosSalvo = "";
+                                                     $("#contadorCsv").html("");
+                                                     $('#informacoesParaSalvar').dialog({
+                                                        title:"Aguarde...",
+                                                        width: 811, 
+                                                        height: 200,
+                                                        buttons:null,
+                                                        position: { my: "center center", at: "center center", of: window },
+                                                    });
+                                                    RPF_obterlistaDeComparacaoParaConfirmacaoDoUsuario(RPF_url,"realizarTesteConfirmacaoExel");
+                                                    $(this).dialog("close");
+                                                }else{
+                                                     showMessage(
+                                                                "Atenção", 
+                                                                "Selecione um SPED antes de continuar",
+                                                                { "Ok": function () { 
+                                                                       $(this).dialog("close");
+                                                                    } 
+                                                                });
+                                                }
+                                            } 
+                                            else if ($("#radioWeb").is(':checked')){ 
+                                                $(indexVars.divBarraProgresso).dialog("open");
+                                                RPF_processarRelatorio();
+                                            }
+                                        },
+                                        "Não": function () { 
+                                            $(this).dialog("close"); 
+                                        } 
+                                    },
+                                    undefined,
+                                    { 
+                                        width: "356", 
+                                        height: "174", 
+                                        modal: true
+                                    }
+                            );
+                    }else{
+                        showMessage("Atenção", "Deseja processar o relatório?", 
+                                { 
+                                    "Sim": function () { 
+                                        $(this).dialog("close");
+                                        RPF_processarRelatorio();
+                                    },
+                                    "Não": function () { 
+                                        $(this).dialog("close"); 
+                                    } 
+                                },
+                                undefined,
+                                { width: "356", height: "174", modal: true});
+                    }
+                });
+                $("#selecionarCaminhoExel").click(function(){
+                    RCF_caminhoExel ="#{relCredDebBackBean.tfCaminhoExel.clientId.replace(":", "\\\\:")}";
+                    //abrirNavegador("divNav", "#\{relCredDebBackBean.tfCaminhoDirXMLsCFes.clientId.replace(":", "\\\\:")}", "d", "divNav");
+                    abrirNavegador("divNav", RCF_caminhoExel, "d", "divNav");
+                });
+
+                $('#atualizarWs').click(function(){ 
+                    if($(this).is(':checked')){
+                        $('#dialogUploadExel').dialog({
+                            title:"Importar Arquivo",
+                            height: 400,
+                            width:640,
+                             position: { my: "center center", at: "center center", of: window },
+                        }).dialog("open");
+                        $("#radioExel").attr("checked",true);
+                        $('#campoParaCaminhoExel').show();
+                     }
+                }); 
+
+                $('.radioInport').click(function(){
+                    $("input[type='radio'][name=radioImportacao]").each(function(){
+                        if($(this).is(':checked')){
+                            var campo = $(this).closest(".info");
+                             campo.css("background-color","#f5f3e5");
+                            if($(this).attr("id") == "radioExel"){
+                              //$('#dialogUploadExel').css("width","565.967");
+                              $('#campoParaCaminhoExel').show();  
+                            } else{
+                              $('#campoParaCaminhoExel').hide();  
+                            }
+                          }else{
+                            var campo = $(this).closest(".info");
+                           //campo.css("background-color","#F0FFF0");   
+                          };
+                    });
+                });
+          });
+          // ]]>
+        </script>
+    </ui:define>
+    <ui:define name="conteudo">
+        <div id="divBarraProgresso">
+            <div id="barraProgresso"></div>
+            <div id="labelProgesso"></div>
+            <div id="descProgesso"></div>
+        </div>
+        <h:form id="formRel" >  
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" class="form-control" />
+            <table  style="border: 0px solid;" >
+                <tr>
+                    <td style="border: 0px solid;">Tipo de Relatório:</td>
+                    <td style="border: 0px solid;">
+                        <h:selectOneMenu value="#{relCredDebBackBean.tipoRelatorio}" id="selectRel" class="tf select" style="width: 523px;margin-right: 20px;" onchange="RPF_toogleFormulario()" >
+                            <f:selectItems value="#{relCredDebBackBean.retornarTiposRelatorio()}" var="tr" 
+                                           itemLabel="#{tr.nome}" itemValue="#{tr}"   />
+                        </h:selectOneMenu>    
+                        <!--<h:commandButton value="Gerar Relatorio" id="tfGerarRelatorio" action=""  onclick="Dialogo();"/>
+                        <input id="btGerarRelatorio" type="button" value="Processar" style="float: right" class="bt" /> -->
+                        <!--<div style="float:right;float: right;border: 1px solid #ccc;padding: 9px;padding-right: 10px;border-radius: 3px;margin-right: 3px; "><span style="margin-right: 45px;">Atualizar a base? </span>
+                            <input id="atualizarWs" type="checkbox" />
+                        </div>-->
+                    </td>
+                </tr>                
+                <tr style="border: 0px solid;">
+                    <td style="border: 0px solid;"><h:outputText value="SPED Modificado:" style="margin-right: 4px;" /></td>
+                    <td style="border: 0px solid;">                        
+                        <h:inputText id="tfCaminhoArquivoSPED" value="#{relCredDebBackBean.caminhoArquivoSPED}" binding="#{relCredDebBackBean.tfCaminhoArquivoSPED}" style="width: 500px;     margin-right: 20px;" class="tf"/>
+                        <input type="button" id="btnNavCaminhoSPED" value="Selecionar Arquivo"  /><!--<h:commandButton action="#/{relCredDebBackBean.btnGerarListaWs()}"  value="&#8634;" style="width: 50px; margin-left: 16px;"></h:commandButton>-->
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 0px solid;"><h:outputText value="NF-e correspondente: "/></td>
+                    <td style="border: 0px solid;">                        
+                        <h:inputText id="tfCaminhoDirXMLsNFes" value="#{relCredDebBackBean.caminhoDirXMLsNFes}" binding="#{relCredDebBackBean.tfCaminhoDirXMLsNFes}" style="width: 500px;margin-right: 20px;" class="tf CaminhoArquivo" />
+                        <input type="button" id="btnNavCaminhoDirXMLsNFes" value="Selecionar Arquivo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 0px solid;"><h:outputText value="NFC-e correspondente: "/></td>
+                    <td style="border: 0px solid;">                        
+                        <h:inputText id="tfCaminhoDirXMLsNFCes" value="#{relCredDebBackBean.caminhoDirXMLsNFCe}" binding="#{relCredDebBackBean.tfCaminhoDirXMLsNFCes}" style="width: 500px;margin-right: 20px;" class="tf CaminhoArquivo"/>
+                        <input type="button" id="btnNavCaminhoDirXMLsNFCe" value="Selecionar Arquivo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 0px solid;"><h:outputText value="CF-e correspondente: "/></td>
+                    <td style="border: 0px solid;">                        
+                        <h:inputText id="tfCaminhoDirXMLsCFes" value="#{relCredDebBackBean.caminhoDirXmlsCFes}" binding="#{relCredDebBackBean.tfCaminhoDirXMLsCFes}" style="width: 500px;margin-right: 20px;" class="tf CaminhoArquivo"/>
+                        <input type="button" id="btnNavCaminhoDirXMLsCFe" value="Selecionar Arquivo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="text-align: right">     
+                        <!--<h:commandButton action="#\{relCredDebBackBean.btGerarRelatorio()}"  value="Gerar Relatório" style="margin-right: 1px;"></h:commandButton>-->
+                        
+                        <input id="btGerarRelatorio" type="button" value="Processar" style="float: right" class="bt" /> 
+                        <div id="btObterRelatorio" class="bt" style="color: #b1d556;
+    border: 1px solid #3e910b;
+    background: #a9d145;
+    float: right;
+    padding: 10px;
+    margin-right: 24px;
+    border-radius: 3px;
+    
+    "> <a  download="relatório.xls" href="#" onclick="return ExcellentExport.excel(this, 'datatable', 'Relatório');" style="margin: 15px; color: #fff;font-weight: bold;" >Download em XLS</a></div>
+                        <!--<input id="btObterRelatorio" download="relatório.xls" type="button" value="Download em XLS" style="float: right;margin-right: 23px;" class="bt" onclick="return ExcellentExport.excel(this, 'datatable', 'Relatório');"/>--> 
+                    </td>                  
+                </tr>                 
+            </table>
+            <!--<div id="msgErro">
+                <h:outputText value="#/{relCredDebBackBean.mensagem}" class="msgErro" style="background: #ffffff"/>
+            </div>
+            <div style="padding: 4px; border: 0px solid; width: 684px; position: relative; float: left; margin-left: 25px; top: -35px;">
+                <span id="exibirRelatorio" style="margin-right: 5px;">
+                    <div class="iconeShowReport" onclick="RPF_obterRelatorio()" style="cursor: pointer;"  title="desprender relatório" ></div>
+                </span>        
+                <span id="msg" style="border: 0px solid; font-size: 12px;">
+                    <h:outputText value="#{relCredDebBackBean.mensagem}" />
+                </span>
+            </div>
+                                <legend>Selecione: </legend>  
+           -->
+           <div id="informacoesParaSalvar"></div>
+           <div id="dialogUploadExel"> 
+               <div class="tipoArmazenar excel">
+                    <input type="radio" name="radioImportacao" id="radioExel" class="radioInport">
+                        <label for="radioExel" class="radioParaSelecionarTipo">Exel</label>
+                    </input>
+               </div>
+               <div class="tipoArmazenar webService">
+                   <input type="radio" name="radioImportacao" id="radioWeb" class="radioInport">
+                        <label for="radioWeb" class="radioParaSelecionarTipo">Web Service MIX</label>
+                    </input>
+               </div>
+                 <!--<fieldset id="fildSetInportDados">-->
+                    <table>
+                        <tr>
+                            <td class="info">
+                               
+                            </td>
+                            <td class="info">
+                                
+                            </td>
+                        </tr>
+                    </table>
+                 <!--</fieldset>-->
+                    <div id="campoParaCaminhoExel">
+                        <div>
+                            <h:inputText id="tfCaminhoExel" value="#{relCredDebBackBean.caminhoExel}" binding="#{relCredDebBackBean.tfCaminhoExel}" style="width: 96%;  margin-right: 20px;" class="tf"/>
+                        </div>
+                        <div>
+                            <input type="button" id="selecionarCaminhoExel" value="Selecionar Arquivo"/>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="retirarUmDoCsv"/>Formatar campo Codigo no CSV?
+                        </div>
+                    </div>
+                </div>
+             <!--<div id="dialog-confirm-exel">
+                 <div id="informacoesSpedParaVerificar"></div>
+             </div>-->
+            <div> 
+                <div id="container" style="overflow: auto;
+                height: 190px;
+                width: 894px;
+                border: 1px #c2ddaf solid;
+                border-radius: 3px;
+                background-color: #e3ffba;
+                padding: 15px;
+                margin-left: 25px;"></div>
+            </div>
+        </h:form>  
+        <div id="divNav"></div>
+        <h:outputScript target="head">
+            <!--window.onload = function (){RPF_identificarDownloadXls();}-->
+        </h:outputScript> 
+    </ui:define>    
+</ui:composition>

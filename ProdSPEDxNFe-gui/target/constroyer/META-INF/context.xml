@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context reloadable="true" antiJARLocking="true" path="/constroyer">
+    <!--   -->
+    <Resource name="jdbc/ConstroyerDB" auth="Container" type="javax.sql.DataSource"
+        maxTotal="100" maxIdle="30" maxWaitMills="10000"
+        url="jdbc:postgresql://192.169.231.223/constroyer?autoReconnect=true"
+        driverClassName="org.postgresql.Driver"          
+        username="postgres"
+        password="Q1w2e3@2014" />
+ 
+    <!-- 
+    <Resource name="jdbc/ConstroyerDB" 
+            auth="Container"
+            type="javax.sql.DataSource"
+            maxTotal="100"
+            maxIdle="30"
+            maxWaitMills="10000"
+            username="postgres"
+            password="Q1w2e3@2014"            
+            driverClassName="org.postgresql.Driver"          
+            url="jdbc:postgresql://localhost/constroyer?autoReconnect=true" />
+    -->
+    <!--   
+    <Resource name="jdbc/ConstroyerDB" 
+            auth="Container"
+            type="javax.sql.DataSource"
+            maxTotal="100"
+            maxIdle="30"
+            maxWaitMills="10000"
+            username="postgres"
+            password="hrpbsmm"
+            driverClassName="org.postgresql.Driver"          
+            url="jdbc:postgresql://192.168.0.111:5432/constroyer?autoReconnect=true" />
+          --> 
+           <!-- mysql 
+           <Resource name="jdbc/ConstroyerDB" 
+                    auth="Container" 
+                    type="javax.sql.DataSource"
+                    maxActive="50" 
+                    maxIdle="30" 
+                    maxWait="10000"
+                    username="root" 
+                    password="Q1w2e3@2014"
+                    driverClassName="com.mysql.jdbc.Driver"
+                    url="jdbc:mysql://localhost:3306/constroyer"/>
+            -->
+</Context>

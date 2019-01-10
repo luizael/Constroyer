@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="constroyer">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <dependent-module archiveName="ProdSPEDxNFe-services-5.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ProdSPEDxNFe-services/ProdSPEDxNFe-services">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ProdSPEDxNFe-domain-5.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ProdSPEDxNFe-domain/ProdSPEDxNFe-domain">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ProdSPEDxNFe-ex-5.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ProdSPEDxNFe-ex/ProdSPEDxNFe-ex">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ProdSPEDxNFe-util-5.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ProdSPEDxNFe-util/ProdSPEDxNFe-util">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ProdSPEDxNFe-dao-5.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ProdSPEDxNFe-dao/ProdSPEDxNFe-dao">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ProdSPEDxNFe-sal-5.0.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ProdSPEDxNFe-sal/ProdSPEDxNFe-sal">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="constroyer"/>
+        <property name="java-output-path" value="/ProdSPEDxNFe-gui/target/classes"/>
+    </wb-module>
+</project-modules>

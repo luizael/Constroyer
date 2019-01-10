@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/masterlayout.xhtml"
+        xmlns="http://www.w3.org/1999/xhtml" 
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:p="http://primefaces.org/ui">
+    <ui:define name="titulo">Cadastro de Usuario</ui:define>    
+    <ui:define name="tituloConteudo">Cadastro de  Usuário</ui:define>
+    <ui:define name="head">
+        <h:outputScript name="js/cadastroUsuario.js" /> 
+    </ui:define>
+    <ui:define name="conteudo">
+        <h:form>
+            <div id="idFormularioUsuario" >
+                <input type="hidden" id="txtHdnIdUsuario" />
+                <table>
+                    <tr>
+                         <td><label>Nome:</label></td>
+                         <td><input type="text" size="30" id="txtNome" /></td>
+                    </tr>
+                    <tr>
+                         <td><label>E-mail:</label></td>
+                         <td><input type="text" size="30" id="txtEmail" /></td>
+                    </tr>
+                    <tr>
+                         <td><label>Usuário:</label></td>
+                         <td><input type="text" size="30" id="txtUsuario" /></td>
+                    </tr>  
+                    <tr>
+                         <td><label>Senha:</label></td>
+                         <td><input type="password" maxlength="20" size="30" id="txtSenha"/></td>
+                    </tr> 
+                    <tr>
+                         <td><label>Repetir a Senha:</label></td>
+                         <td><input type="password" maxlength="20" size="30" id="txtRptSenha"/></td>
+                    </tr> 
+                </table>
+            </div>
+            <input type="button" value="Novo"  id="btnNovo" onclick="Usuario_novo();return false"/> 
+            <table id="jqGrideUsuario" style="z-index: 0" ></table>
+            <div id="jqGrideUsuarioPage"  style="z-index: 0"></div>  
+        </h:form>            
+    </ui:define>
+</ui:composition>
+

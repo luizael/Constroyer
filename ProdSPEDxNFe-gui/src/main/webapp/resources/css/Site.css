@@ -1,0 +1,957 @@
+*{margin:auto;}
+body
+{
+    font-family: 'Montserrat', Helvetica, Arial, Lucida, sans-serif;
+}
+.body
+{   
+    width: 99.8%;
+    margin: auto;
+}
+
+a {
+   font-size: 15px;
+}
+
+#logoMarca
+{
+    background: url("#{resource['img/logoMixFiscalCustom.png']}") no-repeat; 
+    width: 123px;
+    height: 60px;
+    position: relative;
+    float: left;
+    margin-left: 9.8%;
+}
+.containerMenu
+{
+    width: 58%;
+    border: 0px solid;
+    position: relative;
+    float: right;
+    margin-right: 18%;
+}
+#menu
+{  
+    margin-top: 8px;
+    padding: 0;
+    list-style: none;
+    width: 98%;
+    border: 0px solid #ccc;
+    height: 45px;
+}
+
+#menu li
+{  
+    position: relative;
+    float:right;
+    border-right: 1px solid #c0c0c0;
+    margin-left: -3px;
+    margin-right: 6px;
+    border: 1px solid rgba(62, 62, 62, 0.15);
+    padding: 13px;
+    border-radius: 5px;
+    font-family: 'Montserrat', Helvetica, Arial, Lucida, sans-serif;   
+}
+#menu li:hover
+{
+    color: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.02);    
+}
+#menu li a
+{
+   font-family: 'Montserrat', Helvetica, Arial, Lucida, sans-serif;
+   font-weight: 600;
+   font-size: 15px;
+   text-transform: uppercase;
+   color: #333333;
+   text-decoration: none;
+}
+#menu li ul
+{
+    position: absolute;
+    top: 30px;
+    left: 0;
+    background-color: #fff;
+    display: none;
+    padding: 5px;
+    z-index: 2;
+    border: 1px solid #c0c0c0;
+    margin-top: 17px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow:  -2px 2px 3px #808080;
+}
+
+#menu li ul li{
+    border:1px solid #c0c0c0;
+    display:block;
+    width:150px;
+    margin: 3px;
+    background: #fff;
+}
+#menu li ul li:hover{
+    color: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.02);
+}
+#menu li ul li a
+{
+   font-family: 'Montserrat', Helvetica, Arial, Lucida, sans-serif;
+   font-weight: 600;
+   font-size: 15px;
+   text-transform: uppercase;
+   color: #333333;
+}
+.subMenu:hover
+{
+    color: rgba(0, 0, 0, 0.6);
+}
+.menuIcon{
+   width: 10px;
+   height: 10px;
+   border: 0px solid;
+   margin-right: 5px;
+}
+
+.inicio{
+    background: url("#{resource['img/home.png']}") no-repeat;
+    padding-left: 19px;
+ }
+.relatorio{
+    background: url("#{resource['img/chart.png']}") no-repeat;
+    padding-left: 19px;
+ }
+ .cadastroCfop{
+    background: url("#{resource['img/cadastro.png']}") no-repeat;
+    padding-left: 19px;
+ }
+ .cadastroUsuario{
+    background: url("#{resource['img/usuario.png']}") no-repeat;
+    padding-left: 19px;
+ }
+ .servicos{
+    background: url("#{resource['img/work.png']}") no-repeat;
+    padding-left: 19px;
+ }
+ .equivalente{
+    background: url("#{resource['img/compare.png']}") no-repeat;
+    padding-left: 19px;
+ }
+ .cadastroToken{
+    background: url("#{resource['img/compare.png']}") no-repeat;
+    padding-left: 19px;
+ }
+.clear
+{
+    clear:  both;
+}
+#containerLogoTipoMenu
+{}
+#tituloConteudo
+{
+    background-color: #BCDB6E;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 8px;
+}
+#tituloConteudo h2
+{     
+    color:#fff;
+}
+#conteudo
+{
+    width:72%;
+    position: relative;
+    margin-left: 10%;
+}
+.tf
+{
+    width: 480px;
+    padding: 10px;
+    font-family: 'Montserrat', Helvetica, Arial, Lucida, sans-serif;
+    font-weight: lighter;
+    font-size: 15px;
+    border:1px solid #ccc;
+    border-radius: 3px;    
+}
+.select{
+    margin-right: 5px;
+    width: 521px;
+}
+input.ui-button 
+{
+    padding: .4em 1em;
+    width: 206px;
+}
+#tituloResumoProcessamento
+{    
+    font-family: 'Montserrat', Helvetica, Arial, Lucida, sans-serif;
+    font-size: 15px;
+    color: #459e00;
+    line-height: normal;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 19px;
+    margin-left: 18px;
+    margin-bottom: 10px;
+    border: 0px solid;
+    width: 550px;
+}
+#resumoProcessamento
+{
+    width: 943px;
+    height: 200px;
+    overflow: auto;
+    border: 1px #c2ddaf solid;
+    background-color: #e3ffba;
+    border-radius: 3px;
+}
+#msgErro
+{
+    width: 933px;
+    border: 1px #eae6de solid;
+    background-color: #fdfffd;
+    padding: 15px;
+    text-align: center;
+    border-radius: 3px;
+    margin-left: 3px;
+}
+#imgCloseErro
+{
+    border: 0px solid;
+    height: 14px;
+    background: #fff url("#{resource['css/custom-theme/images/ui-icons_8DC262_256x240.png']}")no-repeat;
+    background-position: -97px -129px;
+    color: #222;
+    width: 14px;
+    position: relative;
+    float: left;
+    cursor: pointer;
+    border-radius: 3px;
+    top: -13px;
+    left: -13px;
+}
+#imgCloseErro:hover
+{
+    border: 0px solid;
+    height: 14px;    
+    background-position: -81px -129px;
+    color: #222;
+    width: 14px;
+    position: relative;
+    float: left;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.orderby
+{
+    border: 1px solid;
+    height: 17px;
+    width: 16px;
+    background: #fff url("#{resource['css/custom-theme/images/ui-icons_8DC262_256x240.png']}")no-repeat;
+    float: right;
+    position: relative;
+    top: 3.5px;
+    margin-left: 3px;
+    border-radius: 3px;
+    cursor: pointer;
+    right: 23px;
+}
+.asc
+{
+    background-position: -192px -32px;
+    display: none;
+}.asc:hover
+{
+   background-position: -192px -48px;
+}
+.desc
+{
+    background-position: -224px -31px;
+    display: none;
+}.desc:hover
+{
+    background-position: -224px -48px;
+}
+.busca
+{
+    background-position: -192px -191px; 
+}
+.busca:hover
+{
+   background-position: -176px -191px;
+}
+#footer
+{
+    background-color: #BCDB6E;
+    padding-top: 2px;
+    text-align: center;
+    margin-top: 8px;
+    color: #fff;
+    position: fixed;
+    width: 99.99%;
+    bottom: 0px;
+    z-index: 100;
+}
+#localAtualNavegador
+{
+    float: left;
+    padding-right: 5px;
+    width: 12.95%;
+    border: 1px #c2ddaf solid;
+    margin-bottom: 2px;
+    padding: 9px;
+    border: 1px solid;
+    margin-left: 4px;
+    background-color: #BCDB6E;
+    border-radius: 3px;
+    color: #fff;
+}
+#divLocalAtual
+{
+    float: left;
+    padding-right: 5px;
+    width: 77.8%;
+    border: 1px #c2ddaf solid;
+    margin-bottom: 2px;
+    padding: 9px;   
+    margin-left: 4px;
+    background-color:  #e3ffba;
+    border-radius: 3px;
+    color: #333333;
+}
+#divNavegador
+{
+    border: 1px solid #cccccc; 
+    overflow: auto;
+    border-radius: 3px;
+    background: #fff;
+    width: 94.5%;
+    height: 370.3px;
+    margin-left: 6px;
+    padding-left: 10px;
+}
+#arquivoSelecionado
+{
+    float: left;
+    padding-right: 5px;
+    float: left;
+    padding-right: 5px;
+    width: 20.95%;
+    border: 1px #c2ddaf solid;
+    margin-bottom: 2px;
+    padding: 9px;
+    border: 1px solid;
+    margin-left: 4px;
+    background-color: #BCDB6E;
+    border-radius: 3px;
+    color: #fff;
+}
+#divArquivoSelecionado
+{
+    float: left;
+    padding-right: 5px;
+    float: left;
+    padding-right: 5px;
+    width: 69.8%;    
+    margin-bottom: 2px;
+    padding: 9px;
+    margin-left: 4px;   
+    border-radius: 3px;   
+    height: 19px;
+    margin-bottom: 13px;
+    padding: 8px;
+    margin-top: 1px;
+    background-color: #e3ffba;
+    border: 1px #c2ddaf solid;
+    color: #333333;
+}
+.linhaArquivoSelecionado
+{
+    margin-botom:2px;
+    border: 3px solid #fff;
+}
+.linhaArquivoSelecionado:hover
+{
+    background:#cf8f0e;
+    color:#fff;    
+}
+#btnSelecionar
+{
+    position: relative;
+    top: 13px;
+    right: 22px;
+    float: right;
+}
+fieldset
+{
+    border: 1px #dfd9c3 solid;
+    margin-bottom: 10px;
+    border-radius: 3px;
+    background: #f5f3e5;
+    width: 910px;
+}
+legend
+{
+    font-family: 'Montserrat', Helvetica, Arial, Lucida, sans-serif;
+    font-size: 15px;
+    color: #459e00;
+    line-height: normal;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 19px;
+}
+#tabelaRelatorio
+{
+    position: relative;
+    float: left;
+    font-family: 'Montserrat', Helvetica, Arial, Lucida, sans-serif;
+    font-weight: lighter;
+    font-size: 15px;
+    border: 0px solid;
+    width: 99%;
+}
+.celLabel
+{
+    border: 1px solid #c2ddaf;
+    background-color: #bcdb6e;
+    color: #333;
+    width: 100px;
+}
+.celValue
+{
+    border: 1px solid #c2ddaf;
+    background-color: #bcdb6e;
+    color: #333;    
+    background-color: #fff;
+    color: rgba(0, 0, 0, 0.6);
+}
+#formFiltro
+{
+    border: 0px solid;
+    position: relative;
+    left: 1px;
+    float: left;
+    margin-bottom: 5px;
+}
+.formLinha
+{
+    height: 10px;
+    border: 1px solid;
+}
+.formLabel
+{
+    border: 0px solid #c2ddaf;
+    background-color: #bcdb6e;
+    color: #333;
+    width: 100px;
+    font-size: 15px;
+}
+.formInputValue
+{
+    width: 250px; 
+    margin-right: 5px;
+    height: 15px;
+    font-size: 10px;
+    padding: 2px;
+    color: rgba(0, 0, 0, 0.6);
+    border: 1px solid #c2ddaf;
+    border-radius: 3px;
+}
+.formInputValue #txtFRelCFOPChaveNFe
+{
+    width: 70px; 
+    margin-right: 5px;
+}
+#divFiltroCFOP
+{
+    width: 842px;
+    border:0px solid;
+    margin-bottom: 5px;
+    height: 120px;
+    background: #fff; 
+}
+#fdsFiltro
+{
+  width: 852px;
+  border:none;
+}
+.filtro tr td 
+{
+    white-space: nowrap 
+}
+#btnBuscarRelCFOP
+{
+    position: relative;
+    float: right;
+    right:4px;
+}
+.scroll-pane
+{
+    width: 100%;
+    height: 200px;
+    overflow: auto;
+}
+.horizontal-only
+{
+    height: auto;
+    max-height: 200px;
+}
+.subMenu 
+{
+    text-decoration: none;
+    font-family: 'Montserrat', Helvetica, Arial, Lucida, sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    text-transform: uppercase;
+    margin-left: 6px;
+    margin-right: 6px;    
+    color: #333333;
+    cursor: pointer;
+}
+
+#divRelatorios
+{
+    width: 924px;
+}
+#divRelCFOP
+{
+    background: #fff;
+}
+#divRelXMLs
+{
+    background: #fff;
+}
+#resumoProcessamentoParagrafo
+{
+    width: 100%;
+    padding: 12px;
+}
+.linha
+{    
+    border-bottom: 1px solid #e1dbdb;
+    margin-bottom: 4px;
+    font-size: 9px;
+}
+.zb-0
+{    
+    background: rgba(188, 219, 110, 0.35);
+}
+.zb-1
+{    
+     background: #fff;
+}
+.zb-2
+{    
+     background: #00B3F0;
+}
+
+.celProdutoRegistrado
+{
+    border: 0px solid;
+    float: left;
+    width: 40%;
+    margin-left: 3px;
+    position: relative;
+    top: 2px;
+    font-weight: 700;
+    font-size: 12px;
+}
+.celProdutosEncontrado
+{
+    border-left: 1px solid #e1dbdb;
+    width: 58%;
+    float: left;
+    padding-left: 7px; 
+    font-weight: 700;
+    top: 2px;
+    font-size: 12px;
+}
+.container
+{   
+   margin-bottom: 0px;   
+}
+.container:hover{}
+
+.produtoAssociado
+{
+   border-bottom: 1px solid rgba(226, 225, 205, 0.21);
+    margin: 0px;
+    padding: 0px;
+}
+.produtoAssociado:hover
+{   
+    background: #9dcf77;
+    color: #fff;
+    border-radius: 3px;
+    box-shadow: -2px 2px 3px #437A33;
+}
+.containerControles
+{
+    border: 0px solid #3e910b;
+    float: right;
+    position: relative;
+    top: -1px;
+    width: 110px;
+    height: 18px; 
+}
+.botOk
+{
+    border: 1px solid #3e910b;
+    background-color: #abd249;
+    border-radius: 3px;
+    cursor: pointer;
+    width: 19px;
+    float: right;
+    position: relative;
+    right: 2px;
+    height: 15px;
+    text-align: center;
+    z-index: 2;
+}
+
+.botOk:hover
+{
+    background: #3e910b;
+    color:#fff;
+}
+.botOkDisable
+{
+    border: 1px solid #ccc;
+    background-color: #ffffff;
+    text-align: center;
+    border-radius: 3px;
+    width: 20px;
+    float: right;
+    position: relative;
+    right: 1px;
+    height: 17px;
+    text-align: center;
+    top: -1px;
+    color: #ccc;
+        
+}
+.produtoPreSelecionado
+{
+    border: 0px solid;  
+    margin-bottom: 5px;
+}
+.containerDropdow
+{    
+    border: 0px solid;
+    float: left;
+    position: relative;
+    cursor: pointer;
+    left: 13px;
+    margin-top: 2px;
+    width: 95.4%;
+    margin-bottom: 7px;
+    display: none;
+}
+.botVer
+{
+    background: #fff url("#{resource['css/custom-theme/images/ui-icons_8DC262_256x240.png']}") no-repeat;
+    background-position: -127px -33px;
+    border: 1px solid #3e910b;
+    border-radius: 3px;
+    cursor: pointer;
+    height: 15px;
+    width: 19px;
+    position: relative;
+    top: -18px; 
+}
+.botVer:hover
+{
+   background-position: -126px -49px;
+   color:#fff;
+}
+.checkBoxOk
+{
+    border: 0px solid;
+    width: 13px;
+    left: 19px;
+    position: relative;
+}
+.checkBoxContainer{
+    border: 1px solid #3e910b;
+    /* background-color: #abd249; */
+    border-radius: 3px;
+    cursor: pointer;
+    width: 12px;
+    float: right;
+    position: relative;
+    right: 0px;
+    height: 12px;
+    padding: 3.8px;
+}
+.sub
+{
+    border: 0px solid #3e910b; 
+    width: 18px;
+    float: right;
+    position: relative;
+    right: -1px;
+    height: 7px;
+    top: -3px;
+}
+input[type=checkbox].css-checkbox 
+{
+    position:absolute; 
+    z-index:-1000; 
+    left:-1000px; 
+    overflow: hidden; 
+    clip: rect(0 0 0 0); 
+    height:1px; 
+    width:1px; 
+    margin:-1px; 
+    padding:0; 
+    border:0;
+}
+input[type=checkbox].css-checkbox + label.css-label 
+{
+    padding-left:23px;
+    height:18px; 
+    display:inline-block;
+    line-height:18px;
+    background-repeat:no-repeat;
+    background-position: 0 0;
+    font-size:18px;
+    vertical-align:middle;
+    cursor:pointer;
+}
+input[type=checkbox].css-checkbox:checked + label.css-label 
+{
+    background-position: 0 -18px;
+}
+label{margin-right:20px;}
+label.css-label 
+{
+    background-image:url("#{resource['img/check-box.fw.png']}");
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#relacionamentoManual
+{
+    background:  #fff;
+}
+.total
+{
+    position: relative;
+    bottom: 3px;
+    font-size: 13px;
+    padding: 1px;
+    height: 11px;
+    color: #343532;
+    margin-top: 0px;
+}
+.porcentagem
+{
+    font-weight: bold;
+    font-size: 11px;
+    color: #333333;
+}
+#listaDeProdutosPreAssociado
+{
+    margin-bottom: 3px;
+    height: 336px;
+    overflow: inherit;
+    background: #fff;
+    border: 1px solid #e1dbdb;
+    
+}
+.hrAssociados
+{
+    border: 1px solid #e1dbdb;
+    border-bottom: 0px;
+    font-family: 'Montserrat', Helvetica, Arial, Lucida, sans-serif;
+    font-size: 15px;
+    color: #459e00;
+    font-weight: 700;
+    height: 29px;
+}
+.colSped
+{
+    border-right: 1px solid #e1dbdb;
+    float: left;
+    width: 39.3%;
+    margin-left: 5px;
+    position: relative;
+   
+}
+.colNFe
+{
+   margin-top: 4px;
+}
+#containerTotal
+{
+    height: 50px;
+    width: 100%;
+    background: #ffffff;
+}
+.seta{
+    font-size: 15px;
+    /*position: relative;*/
+   /* left: -16px;*/
+}
+#txtFiltroSpeed
+{
+    font-family: segoe ui,Arial,sans-serif;
+    width: 80%;
+    height: 13px;
+    margin-top: 3px;
+    font-size: 13px;
+    padding: 2px;
+    border-radius: 3px;
+    margin-left: 5px;
+    border: 1px solid #459e00;
+    text-transform: uppercase;
+}
+#loginContainer
+{
+    border: 1px solid #459e00;
+    width: 35%;
+    margin-top: 15%;
+    padding: 20px;
+    background: #edffbc;
+    border-radius: 5px;
+    box-shadow: 0px 0px 3px -1px;
+}
+
+#containerRelatorio{
+    margin-bottom: 50px;       
+    overflow: auto;
+    height: 280px;
+    width: 970px;
+}
+
+.iconeDownload{
+    width: 32px;
+    height: 32px;
+    background: url("#{resource['img/download.png']}") no-repeat; 
+    position: relative;
+    float: left;
+    padding: 1px;
+    top: -7px;
+}
+.iconeShowReport{
+    width: 19px;
+    height: 19px;
+    background: url("#{resource['img/showReport1.png']}") no-repeat; 
+    position: relative;
+    float: left;
+    padding: 1px;
+    top: 0x;    
+}
+.rel_multiplo_1{
+    color: #e3a345;
+    border-bottom: 1px dashed  #ffcc00;
+}
+.rel_automatico_1{    
+     color:#ccc;
+}
+.det
+{
+    cursor: pointer;
+    display: inline;
+    width: 21px;
+    height: 17px;
+    border: 1px solid #3e910b;
+    float: left;
+    background: #fff url("#{resource['css/custom-theme/images/ui-icons_8DC262_256x240.png']}")no-repeat;
+    background-position: -30px -80px;  
+    border-radius: 3px;
+    margin-right: 4px;  
+}
+.det:hover{
+    border: 1px solid #c2ddaf;    
+}
+.detXml{
+    
+}
+.detInf{
+    display: none;
+    position: absolute;
+    border: 1px solid;
+    background: #f5e151;
+    z-index: 99999;
+    /* top: 17px; */
+    width: 380px;
+    height: 80px;
+    border-radius: 3px;
+    border-color: #e1dbdb;
+    box-shadow: 5px 5px 5px rgba(0,0,0,0.5);
+    padding: 9px;
+}
+.infDetSped{
+    left: 32px;
+}
+.infDetXml{
+   position:relative;
+}
+.closeDet{
+    float: right;
+    margin-right: 2px;
+    margin-top: 2px;
+    border: 1px solid #3e910b;
+    width: 8px;
+    padding-left: 4px;
+    padding-bottom: 2px;
+    padding-right: 2px;
+    border-radius: 3px;
+    background-color: #b1d556;
+    cursor: pointer;
+    color: #fff;
+}
+.detValor{
+    color: #ea3208;
+    text-decoration: underline;
+}
+
+.resumoProcessamento{
+    border: 1px solid #cccccc;
+    background: #fff;
+    padding: 3px;
+    width: 97%;
+    margin-bottom: -1px;
+    color: rgba(49, 46, 37, 0.83);
+}
+.resumoProcessamentoValor{
+    color: #459e00;
+    font-weight: 900;
+    border: 0px solid #459e00;
+    padding-left: 10px;
+    padding-right: 13px;
+}
+#fildSetInportDados{
+    /*float: left;
+    background: #f5f3e5;*/
+}
+#dialogUploadExel{
+    /*width: 98%;
+    background-color: #f5f3e5;*/
+    
+}
+.tipoArmazenar{
+    border: 1px solid #ccc;
+    padding: 11px;
+    margin-bottom: 4px;
+    border-radius: 3px;
+    cursor: pointer;
+    background: #ffffff;
+    /* borda #3e910b back #a9d145*/
+}
+.tipoArmazenar:hover{
+    border: 1px #3e910b solid;
+    background: #a9d145;
+    color: #ffffff;
+}
+.radioParaSelecionarTipo{
+    padding-right: 69%;
+    padding-bottom: 7px;
+    padding-top: 7px;
+}

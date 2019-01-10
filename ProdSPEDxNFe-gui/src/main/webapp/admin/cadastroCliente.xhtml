@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition template="/layout/masterlayout.xhtml"
+        xmlns="http://www.w3.org/1999/xhtml" 
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
+<ui:define name="titulo">Cadastro de  Cliente</ui:define>    
+    <ui:define name="tituloConteudo">Cadastro de  Cliente</ui:define>
+    <ui:define name="head">
+        <h:outputScript name="js/cadastroCliente.js" /> 
+</ui:define>
+    <ui:define name="conteudo">
+        <h:form>
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" class="form-control" />
+            <div id="idFormularioCliente" >
+                <input type="hidden" id="txtHdnIdCliente" />
+                <table>
+                    <tr>
+                         <td><label>Nome:</label></td>
+                         <td><input type="text" size="70" id="txtNome" /></td>
+                    </tr>
+                    <tr>
+                         <td><label>Cnpj:</label></td>
+                         <td><input type="text" size="70"  id="txtCnpj"   maxlength="14" /></td>
+                    </tr>  
+                     <tr>
+                         <td><label>Token:</label></td>
+                        <td><input type="text" size="70"  id="txtToken"/></td>
+                    </tr>
+                    <tr>
+                        <td><label>Id da View</label></td>
+                        <td><input type="text" size="70"  id="txtIdView"  /></td>
+                    </tr>
+                </table>
+            </div>
+            <input type="button" value="Novo"  id="btnNovo" onclick="Cliente_novo();return false"/> 
+            <table id="jqGrideCliente" style="z-index: 0" ></table>
+            <div id="jqGrideClientePage" style="z-index: 0"></div> 
+            
+            <div id="containerInputFile">
+                <div class="formGroup">
+                    <table>
+                        <tr>
+                            <td>CNPJ</td>
+                            <td><input type="text" id="upCnpjCliente" disabled="disabled" /></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><input type="file" name="upFile" /></td>
+                            <td></td>
+                        </tr>
+                    </table>                    
+                </div>
+                <!--<a href="#" id="submitquery">enviar imagem</a>-->
+            </div>
+        </h:form>            
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="2.2"
+              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+	<application>
+		<message-bundle>resources.application</message-bundle>
+		<locale-config>
+			<default-locale>en</default-locale>
+		</locale-config>
+	</application>
+    <!--
+    <managed-bean>
+        <managed-bean-name>indexBackBean</managed-bean-name>
+        <managed-bean-class>br.com.mixfiscal.prodspedxnfe.gui.backbean.IndexBackBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>relCFOPBackBean</managed-bean-name>
+        <managed-bean-class>br.com.mixfiscal.prodspedxnfe.gui.backbean.RelatorioCFOPBackBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+   -->
+   <managed-bean>
+        <managed-bean-name>requisicaoAtualizacaoInfoFiscalBean</managed-bean-name>
+        <managed-bean-class>br.com.mixfiscal.prodspedxnfe.gui.backbean.RequisicaoAtualizacaoInfoFiscalBean</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>index</from-outcome>
+            <to-view-id>/index.jsf</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/index.jsf</from-view-id>
+        <navigation-case>
+            <from-outcome>relatorioCFOP</from-outcome>
+            <to-view-id>/relatorioCFOP.jsf</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    <navigation-rule>
+        <from-view-id>/relatorioCFOP.jsf</from-view-id>
+        <navigation-case>
+            <from-outcome>index</from-outcome>
+            <to-view-id>/index.jsf</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+</faces-config>

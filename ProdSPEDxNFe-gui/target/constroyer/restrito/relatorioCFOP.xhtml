@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition template="/layout/masterlayout.xhtml"
+        xmlns="http://www.w3.org/1999/xhtml" 
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:p="http://primefaces.org/ui">
+    <ui:define name="titulo">Relatório CFOP</ui:define>    
+    <ui:define name="tituloConteudo">Relatório CFOP</ui:define>
+    <ui:define name="head">
+           <script language="javascript" type="text/javascript"> 
+            // <![CDATA[
+            var url = contextPath + "/ws/relCFOPWS/";            
+            
+            $(document).ready(function () {
+               
+                $("#divRelatorios").tabs();                
+                setWidthDivFiltroCFOP();
+                
+                $("#btnCarregarSPED").click(function () {
+                    $("#btnCarregarSPED").attr("disabled", "disabled");
+                    $("#btnCarregarSPED").attr("value", "Carregando ...");
+                    carregarSPED(false);
+                });
+                
+                $("#btnBuscarRelCFOP").click(function () {
+                    $("#tblRelatorioCFOP").trigger("reloadGrid");
+                });
+                
+                $("#divNav").dialog({
+                    title: "Navegador de Pastas e Arquivos",
+                    autoOpen: false,
+                    width: 770,
+                    height: 595
+                });
+                
+                $("#btnNavCaminhoSPED").click(function () {
+                    abrirNavegador("divNav", "txtCaminhoArquivoSPED", "f", "divNav");
+                });
+                
+                $("#btnNavCaminhoDirXMLsNFes").click(function () {
+                    abrirNavegador("divNav", "txtCaminhoDirXMLsNFes", "d", "divNav");
+                });
+                
+                carregarSPED(true);
+                configurarGridRelatorioCFOP();
+                configurarGridXMLProcessados();              
+               
+            });
+            
+            $(window).resize(function() {
+                setWidthDivFiltroCFOP();
+            });
+            
+            function setWidthDivFiltroCFOP() {
+               /* $("#divFiltroCFOP").css("width", $(window).width() * 0.72); */
+            } 
+            
+            function abrirFecharFiltro() {
+                $("#fdsFiltro").slideToggle("fast");
+                $('.scroll-pane').jScrollPane();
+            }
+            
+            function selectAllCheckbox(chkId, valueToSet) {
+                $(":checkbox").each(function (idx) {                   
+                    if ($(this).prop("id").indexOf(chkId) > 0)
+                        $(this).prop("checked", valueToSet);
+                });
+            }
+            
+            function carregarSPED(isPgLoad) {
+                var caminhoSPED = $("#txtCaminhoArquivoSPED").val();
+                var caminhoDirXMLs = $("#txtCaminhoDirXMLsNFes").val();
+                
+                if (caminhoSPED == "" || caminhoDirXMLs == "") {
+                    if (!isPgLoad) {
+                        showMessage(
+                            "Atenção", 
+                            "O caminho do arquivo SPED e o caminho do diretório<br/> dos XMLs devem ser informados",
+                            { "Ok": function () { $(this).dialog("close"); } });
+                        $("#btnCarregarSPED").removeAttr("disabled");
+                        $("#btnCarregarSPED").attr("value", "Carregar SPED");
+                    }
+                    return;           
+                }
+                
+                var data = { 
+                    "caminhoSPED": caminhoSPED,
+                    "caminhoDirXMLs": caminhoDirXMLs
+                };    
+                executeWebMethod(
+                    url, 
+                    "carregarSPED",
+                    JSON.stringify(data),
+                    function (ret) {                        
+                        if (ret.result === "Success") {
+                            retObj = ret.object;
+                            $("#spanNome").text(retObj.nome);
+                            $("#spanCNPJ").text(retObj.cnpj);
+                            $("#spanDataIni").text(retObj.dataIni);
+                            $("#spanDataFin").text(retObj.dataFin);
+                            $("#tblRelatorioCFOP").trigger("reloadGrid");
+                            $("#tblRelXMLsProcessados").trigger("reloadGrid");
+                        } else
+                            showMessage(
+                                "Erro", 
+                                "Houve um erro ao tentar carregar os dados. Msg: " + ret.message,
+                                { "Ok": function () { $(this).dialog("close"); } });
+                        
+                    },
+                    function () {
+                        $("#btnCarregarSPED").removeAttr("disabled");
+                        $("#btnCarregarSPED").attr("value", "Carregar SPED");
+                    });
+            }
+              
+            function selecionarItem(c, index, selecionado, metodo) {
+                $("input[name=" + c.name + "]").each(function () {
+                    $(this).prop("checked", selecionado ? "checked" : "");
+                });
+                
+                var data = { 
+                    "index": index,
+                    "selecionado": selecionado
+                };    
+                executeWebMethod(
+                    url, 
+                    metodo,
+                    JSON.stringify(data),
+                    function (ret) {                        
+                        if (ret.result !== "Success") {                            
+                            showMessage(
+                                "Erro", 
+                                "Houve um erro ao tentar selecionar o item. Msg: " + ret.message,
+                                { "Ok": function () { $(this).dialog("close"); } });
+                        }
+                        
+                    });
+            }
+            
+            function gridRelatorioCFOPChkSelFormatter(cellvalue, options, rowObject) {
+                return "<input type=\"checkbox\" name=\"relcfop_" + rowObject.chaveNFe + "\" value=\"" + rowObject.index + "\" onclick=\"selecionarItem(this, this.value, this.checked, 'selecionarItemRelCFOP')\" " + (rowObject.selecionado ? "checked" : "" ) + " />";
+            }
+            
+            function configurarGridRelatorioCFOP() {
+                var colunas = [  
+                    { name: '', label: '', index: '', formatter: gridRelatorioCFOPChkSelFormatter, width: 30, align: "center", sortable: false },
+                    { name: 'index', label: '', index: '', hidden: true},
+                    { name: 'chaveNFe', label: 'Chave NFe', index: 'chaveNFe', width: 200 },
+                    { name: 'numeroNF', label: 'Número Nota Fiscal', index: 'numeroNF', width: 100 },
+                    { name: 'cfop', label: 'C FOP', index: 'CFOP', width: 100 },
+                    { name: 'codProd', label: 'Cod. Prod.', index: 'codProd', width: 100 },
+                    { name: 'codBarras', label: 'Cod. Barras', index: 'codBarras', width: 100 },
+                    { name: 'nomeProduto', label: 'Produto', index: 'nomeProduto', width: 200 },
+                    { name: 'ncm', label: 'NCM', index: 'ncm', width: 100 },
+                    { name: 'csticms', label: 'CST ICSM', index: 'csticms', width: 100 },
+                    { name: 'cstipi', label: 'CST IPI', index: 'cstipi', width: 100 },
+                    { name: 'cstpis', label: 'CST PIS', index: 'cstpis', width: 100 },
+                    { name: 'cstcofins', label: 'CST COFINS', index: 'cstcofins', width: 100 },
+                    { name: 'unidadeMedida', label: 'Unid. Medida', index: 'unidadeMedida', width: 100 },
+                    { name: 'qtd', label: 'Qtd', index: 'qtd', width: 100, align: "center" },
+                    { name: 'valorTotal', label: 'Valor', index: 'valorTotal', width: 100, formatter: "currency", align: "right" }
+                ];
+
+                var filterOptions = {
+                    stringResult: true,
+                    searchOnEnter: false
+                };
+
+                configurarJqGrid({
+                    gridId: "#tblRelatorioCFOP",
+                    pagerId: "#divPagerTblRelatorioCFOP",
+                    titulo: null,
+                    urlToSend: url + "listarCFOP",
+                    colunas: colunas,
+                    permitirOrdenacao: true,
+                    dados: {
+                        filters: function () {
+                            return JSON.stringify({
+                                chaveNFe: $("#txtFRelCFOPChaveNFe").val(),
+                                numeroNF: $("#txtFRelCFOPNumNF").val(),
+                                CFOP: $("#txtFRelCFOPCFOP").val(),
+                                codProd: $("#txtFRelCFOPCodProd").val(),
+                                codBarras: $("#txtFRelCFOPCodBarras").val(),
+                                nomeProduto: $("#txtFRelCFOPNomeProd").val(),
+                                NCM: $("#txtFRelCFOPNCM").val(),
+                                CSTICMS: $("#txtFRelCFOPCSTICMS").val(),
+                                CSTIPI: $("#txtFRelCFOPCSTIPI").val(),
+                                CSTPIS: $("#txtFRelCFOPCSTPIS").val(),
+                                CSTCOFINS: $("#txtFRelCFOPCSTCOFINS").val(),
+                                unidadeMedida: $("#txtFRelCFOPUM").val()
+                            });                            
+                        }
+                    },
+                    autoWidth: false,                
+                    height: 300,
+                    width: null,
+                    shrinkToFit: false,
+                    loadonce: false,
+                    filterOptions: null
+                });
+            }
+            
+            function gridXmlProcessadosChkSelFormatter(cellvalue, options, rowObject) {
+                return "<input type=\"checkbox\" name=\"relxml_" + rowObject.chaveNFe + "\" value=\"" + rowObject.index + "\" onclick=\"selecionarItem(this, this.value, this.checked, 'selecionarItemXmlProc')\" />";
+            }
+            
+            function configurarGridXMLProcessados() {
+                var colunas = [                    
+                    { name: '', label: '', index: '', formatter: gridXmlProcessadosChkSelFormatter, width: 30, align: 'center', sortable: false },
+                    { name: 'chaveNFe', label: 'Chave NFe', index: 'chaveNFe', width: 300 },
+                    { name: 'numeroNF', label: 'Número Nota Fiscal', index: 'numeroNF', width: 100 },
+                    { name: 'razaoSocialEmitente', label: 'Emitente', index: 'razaoSocialEmitente', width: 200 },
+                    { name: 'razaoSocialDestinatario', label: 'Destinatário', index: 'razaoSocialDestinatario', width: 200 },
+                    { name: 'valorNotaFiscal', label: 'Valor da Nota', index: 'valorNotaFiscal', align: 'right', formatter: 'currency', width: 100 }
+                ];
+
+                var filterOptions = {
+                    stringResult: true,
+                    searchOnEnter: false
+                };
+
+                configurarJqGrid({
+                    gridId: "#tblRelXMLsProcessados",
+                    pagerId: "#divPagerTblRelXMLsProcessados",
+                    titulo: null,
+                    urlToSend: url + "listarXmlProcessados",
+                    colunas: colunas,
+                    permitirOrdenacao: true,
+                    dados: {
+                        filters: ""
+                    },
+                    autoWidth: false,                
+                    height: 300,
+                    width: null,
+                    shrinkToFit: false,
+                    loadonce: false,
+                    filterOptions: null
+                });
+            }           
+            
+            // ]]>
+        </script>
+    </ui:define>
+    <ui:define name="conteudo">
+        <h:form >            
+            <h:outputText value="#{relCFOPBackBean.mensagem}" class="msgErro"/>
+            <table>
+                <tr>
+                    <td><h:outputText value="Caminho SPED:"/></td>
+                    <td>                        
+                        <input id="txtCaminhoArquivoSPED" name="txtCaminhoArquivoSPED" type="text" value="#{relCFOPBackBean.caminhoArquivoSPED}" class="tf"  />
+                        <input type="button" id="btnNavCaminhoSPED" value="Selecionar Arquivo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><h:outputText value="Caminho Diretório XMLs NFes:"/></td>
+                    <td>                        
+                        <input id="txtCaminhoDirXMLsNFes" name="txtCaminhoDirXMLsNFes" type="text" value="#{relCFOPBackBean.caminhoDirXMLsNFes}" class="tf" />
+                        <input type="button" id="btnNavCaminhoDirXMLsNFes" value="Selecionar Arquivo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="text-align: right">                        
+                        <input id="btnCarregarSPED" name="btnCarregarSPED" type="button" value="Carregar SPED" />
+                    </td>
+                </tr>
+            </table>
+            <fieldset>
+                <legend>Cabeçalho</legend>
+                <table id="tabelaRelatorio">
+                    <tr>
+                        <td class="celLabel"><h:outputText value="Nome:" /></td>
+                        <td class="celValue">
+                            <span id="spanNome"></span>                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="celLabel"><h:outputText value="CNPJ:" /></td>
+                        <td class="celValue">
+                            <span id="spanCNPJ"></span>                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="celLabel"><h:outputText value="Período de:" /></td>
+                        <td class="celValue"> 
+                            <span id="spanDataIni"></span> a <span id="spanDataFin"></span>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <div class="clear"></div>   
+            <div id="divRelatorios">
+                <ul>
+                    <li><a href="#divRelCFOP">CFOP</a></li>
+                    <li><a href="#divRelXMLs">XMLs Processados</a></li>
+                </ul>
+                <div id="divRelCFOP">
+                    <h:selectBooleanCheckbox id="chkMostrarFiltro" onclick="abrirFecharFiltro()" value="#{relCFOPBackBean.mostrarFiltro}"/>
+                    <h:outputLabel for="chkMostrarFiltro" value="Mostrar Filtro  |" class="subMenu" />
+                    <fieldset id="fdsFiltro"  style='display: #{relCFOPBackBean.mostrarFiltro ? "" : "none"}'>
+                       <div id="divFiltroCFOP" class="scroll-pane horizontal-only"  >
+                            <p style="width: 50%;">
+                            <table id="formFiltro" class="filtro" >
+                                <tr class="formLinha">
+                                    <td class="formLabel">Chave NFe:</td>
+                                    <td class="formValue"><input id="txtFRelCFOPChaveNFe" class="formInputValue" type="text"  /></td>
+                                    <td class="formLabel">Núm. NF:</td>
+                                    <td class="formValue"><input id="txtFRelCFOPNumNF" class="formInputValue" type="text"  /></td>
+                                    <td class="formLabel">CFOP:</td>
+                                    <td class="formValue"><input id="txtFRelCFOPCFOP" class="formInputValue" type="text"  /></td>
+                                    <td class="formLabel">Cod. Prod.:</td>
+                                    <td class="formValue"><input id="txtFRelCFOPCodProd" class="formInputValue" type="text" /></td>
+                                </tr>
+                                <tr class="formLinha">
+                                    <td class="formLabel">Cod. Barras:</td>
+                                    <td class="formValue"><input id="txtFRelCFOPCodBarras" class="formInputValue" type="text"  /></td>
+                                    <td class="formLabel">Nome Prod.:</td>
+                                    <td class="formValue"><input id="txtFRelCFOPNomeProd" class="formInputValue" type="text"  /></td>
+                                    <td class="formLabel">NCM:</td>
+                                    <td class="formValue"><input id="txtFRelCFOPNCM" class="formInputValue" type="text"  /></td>
+                                    <td class="formLabel">CST ICMS:</td>
+                                    <td class="formValue"><input id="txtFRelCFOPCSTICMS" class="formInputValue" type="text" /></td>
+                                </tr>
+                                <tr class="formLinha">
+                                    <td class="formLabel">CST IPI:</td>
+                                    <td class="formValue"><input id="txtFRelCFOPCSTIPI" class="formInputValue" type="text" /></td>
+                                    <td class="formLabel">CST PIS:</td>
+                                    <td class="formValue"><input id="txtFRelCFOPCSTPIS" class="formInputValue" type="text"  /></td>
+                                    <td class="formLabel">CST COFINS:</td>
+                                    <td class="formValue"><input id="txtFRelCFOPCSTCOFINS" class="formInputValue" type="text"  /></td>
+                                    <td class="formLabel">UM:</td>
+                                    <td class="formValue"><input id="txtFRelCFOPUM" class="formInputValue" type="text"  /></td>
+                                </tr >
+                            </table>  
+                            </p>
+                        </div>                      
+                        <input id="btnBuscarRelCFOP" type="button" value="Buscar" />
+                    </fieldset>
+                   
+                    <h:commandLink id="clkRelCFOPExportarCSV" class="subMenu"  value="Exportar CSV" action="#{relCFOPBackBean.lnkExportarCsv()}" />#{" | "}
+                    <h:commandLink id="clkRelCFOPBaixarXMLS" class="subMenu" value="Baixar XMLs" action="#{relCFOPBackBean.lnkBaixarXMls()}" />
+                    <table id="tblRelatorioCFOP"></table>
+                    <div id="divPagerTblRelatorioCFOP"></div>                    
+                </div>
+                <div id="divRelXMLs">                    
+                    <h:commandLink id="clkXmlProcExportarCSV"  class="subMenu" value="Exportar CSV" action="#{relCFOPBackBean.lnkXmlProcessadosExportarCsv()}" />#{" | "}
+                    <h:commandLink id="clkXmlProcBaixarXMLS" class="subMenu" value="Baixar XMLs" action="#{relCFOPBackBean.lnkXmlProcessadosBaixarXMLs()}" />
+                    <table id="tblRelXMLsProcessados"></table>
+                    <div id="divPagerTblRelXMLsProcessados"></div>
+                </div>
+            </div>
+            <div id="divNav">                
+            </div>
+            <div class="clear"></div>
+        </h:form>
+    </ui:define>
+</ui:composition>

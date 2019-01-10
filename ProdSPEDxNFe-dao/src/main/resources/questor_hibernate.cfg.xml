@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC 
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <!-- Configuração da conexão com o banco MySQL e dialeto -->
+    <!--
+    <property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+    <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+    <property name="connection.url">jdbc:mysql://localhost/mixfiscal_prodsped_nfe</property>
+    <property name="connection.username">prodspednfe</property>
+    <property name="connection.password">prodspednfe</property>
+    -->    
+    <property name="dialect">org.hibernate.dialect.FirebirdDialect</property>
+    <property name="connection.driver_class">org.firebirdsql.jdbc.FBDriver</property>
+    <!--<property name="connection.url">jdbc:firebirdsql:localhost/3050:C:\Users\Lucas\Documents\Projetos\LuluSoftwares\MixFiscal\DatabaseQuestor\BASE.FDB</property>-->
+    <!--<property name="connection.url">jdbc:firebirdsql:192.168.0.111/3050:Questor</property>-->
+    <property name="connection.url">jdbc:firebirdsql:localhost/3050:QUESTOR</property>
+    <property name="connection.username">sysdba</property>
+    <property name="connection.password">masterkey</property>
+    
+    <!-- Usando as configurações do C3PO para pool de conexões -->
+    <property name="c3po.min_size">5</property>
+    <property name="c3po.max_size">20</property>
+    <property name="c3po.timeout">3600</property>
+    <property name="c3po.max_statements">50</property>
+    <property name="c3po.idle_test_period">3000</property>
+
+    <!-- Configurações de debug -->
+    <property name="show_sql">false</property>
+    <property name="format_sql">false</property>
+    <property name="generate_statistics">false</property>
+    <property name="use_sql_comments">false</property>
+    
+    <property name="hibernate.current_session_context_class">thread</property>      
+  </session-factory>
+</hibernate-configuration>

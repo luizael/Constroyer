@@ -1,0 +1,70 @@
+#fildSetInportDados
+{
+    /*width: 270px;
+    background-color: white;*/
+}
+#fildSetInportDados table{
+    /*position: relative;
+        left: -7px;*/
+}
+#fildSetInportDados table td:hover
+{
+    /*background-color: #606060;*/
+}
+#fildSetInportDados table td 
+{
+ /*border:1px solid #606060;
+ padding: 10px 5px;
+ border-spacing: 3px;
+ box-sizing: border-box;
+ background-color: #F0FFF0;
+ box-shadow: 1px 1px 10px #555;
+ margin-right: 20px;*/
+}
+#fildSetInportDados legend 
+{
+   /* color: black;
+    text-transform: capitalize;*/
+}
+.radioInport
+{
+   /* border-style: solid;*/
+}
+#dialogUploadExel
+{
+  /*background-color: white;*/
+}
+.tabelaExel{
+    border:1px solid #606060;
+    border-spacing: 2px;
+    margin-left: auto;
+    margin-right: auto; 
+    margin-bottom: 10px;
+    font-size: 16px;
+    width: 1250px;
+} 
+.tabelaExel td 
+{
+border:1px solid #606060;
+padding: 10px;
+text-align: center;
+vertical-align: middle;
+}
+.caracTable
+{
+  background-color:#00B3F0 ; 
+  color: #ffffff;
+}
+.leTable 
+{   
+    color: #ffffff;
+    background-color:#606060;
+}
+.ldTable
+{
+       background-color:#c0c0c0;
+}
+.radioParaSelecionarTipo
+{
+    cursor: pointer;
+}

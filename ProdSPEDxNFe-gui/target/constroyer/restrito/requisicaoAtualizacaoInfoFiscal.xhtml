@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition  template="/layout/masterlayout.xhtml"
+        xmlns="http://www.w3.org/1999/xhtml" 
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:p="http://primefaces.org/ui">
+    <ui:define name="head">
+        <h:outputScript name="js/requisicaoAtualizacaoInfoFiscal.js" /> 
+    </ui:define>
+    <ui:define name="tituloConteudo">Requisicao das Atualizações de Infomação Fiscal</ui:define>
+    <ui:define name="conteudo">
+        <h:form>
+        <input type="button" value="Novo"  id="btnNovo" onclick="Req_novo();return false"/> 
+        <table id="jqGrideRequisicao" style="z-index: 0" ></table>
+        <div id="jqGrideRequisicaoPage" style="z-index: 0"></div> 
+        <div id="idDivFormulario">           
+            <table border="0" style="width:90%">
+                <tr>
+                    <td>Selecione o cliente:</td>
+                    <td>
+                        <h:selectOneMenu  class="cbCliente"  >
+                            <f:selectItem itemValue="" itemLabel="Selecione um Cliente"/>
+                            <f:selectItems value="#{requisicaoAtualizacaoInfoFiscalBean.selectItem}"/>
+                        </h:selectOneMenu> 
+                    </td>
+                </tr>
+                <tr>
+                    <td>Formatar código interno?</td>
+                    <td>
+                        <h:selectOneMenu class="cbFormatarCodigoInterno" >
+                            <f:selectItems  value="#{requisicaoAtualizacaoInfoFiscalBean.formatarCodigoInterno}"></f:selectItems>
+                        </h:selectOneMenu>                        
+                    </td>
+                </tr>
+                <tr><td  colspan="2"><input type="file" name="upFile" /></td></tr>
+                <tr><td  colspan="2"></td></tr>
+                <tr><td  colspan="2"><div id="statusUpLoad"></div></td></tr>
+            </table>
+        </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition template="/layout/baselayout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+    xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="head">
+        <script language="javascript" type="text/javascript">
+            // <![CDATA[
+            var url = contextPath + "/ws/navegadorWS/";
+            var idTf = getQueryStringParam("idtf");
+            var tipo = getQueryStringParam("tp");
+            var idwnd = getQueryStringParam("idwnd"); 
+            var cmhoIni = getQueryStringParam("ci");
+            var selectedFile;
+            
+            $(document).ready(function () {
+                cmhoIni = (cmhoIni != null && cmhoIni != undefined && cmhoIni != "undefined" ? decodeURIComponent(cmhoIni) : null);
+                carregarArquivos(cmhoIni);
+                setDivNavSize();
+                
+                $("#btnSelecionar").click(function () {
+                    window.parent.$("#" + idTf).val(removerDiretorioRaiz(selectedFile.caminhoRelativo));
+                    window.parent.$("#" + idwnd).dialog("close");
+                });
+            
+            $(window).resize(function() {
+                setDivNavSize();
+            });
+            });
+            
+            function setDivNavSize() {
+               /* $("#divNavegador").css("width", $(window).width() * 0.97); 
+                $("#divNavegador").css("height", $(window).height() * 0.7); */
+            }
+            var listaArquivos = function(retObj){
+                var buff = "";
+                for (i = 0; i < retObj.arquivos.length; i++) {
+                                var fi = retObj.arquivos[i];
+                                buff += "<div class=\"linhaArquivoSelecionado\" onclick=\"carregarArquivos('" + fi.caminhoAbsoluto.replace(/\\/g, "\\\\") + "', '" + JSON.stringify(fi).replace(/"/g, "\\'") + "')\" style=\"cursor: pointer; \">" 
+                                      + (fi.diretorio ? "<img src=\"#{resource['img/folder.jpg']}\" width=\"20\" height=\"20\" style=\"margin-bottom: -5px; padding-right: 2px\">" : "") 
+                                      + fi.nome + "</div>";
+                            }
+                return buff;
+            }
+            
+            function carregarArquivos(caminho, selFileInfo) {
+                var fileInfo;
+                
+                ultimoCaminhoSel = caminho;                
+                if (selFileInfo != null && selFileInfo != undefined) {
+                    fileInfo = JSON.parse(selFileInfo.replace(/'/g, "\"").replace(/\\/g, "\\\\"));                    
+                    $("#divArquivoSelecionado").text(fileInfo.nome);
+                    selectedFile = fileInfo;                        
+                    if (!fileInfo.diretorio)
+                        return;
+                }
+        
+                var data = { 
+                    "caminho": caminho                    
+                };    
+                executeWebMethod(
+                    url, 
+                    "selecionarPasta",
+                    JSON.stringify(data),
+                    function (ret) {  
+                        var buff = "";
+                        var path = "";
+                        if (ret.result === "Success") {
+                            retObj = ret.object;  
+                            buff = listaArquivos(retObj);
+                            path = retObj.caminhoRelativo;                           
+                        }else{
+                            retObj = ret.object;
+                            if(retObj.caminhoRelativo != ""){
+                                buff = listaArquivos(retObj);
+                                path = retObj.caminhoRelativo;                               
+                            }else{
+                                showMessage(
+                                    "Erro", 
+                                    "Houve um erro ao tentar carregar os dados. Msg: " + ret.message,
+                                    { "Ok": function () { $(this).dialog("close"); } });
+                            }
+                        }
+                        $("#divLocalAtual").text(path);
+                        $("#divNavegador").html(buff);                        
+                    },
+                    function () {
+                        $("#btnCarregarSPED").removeAttr("disabled");
+                        $("#btnCarregarSPED").attr("value", "Carregar SPED");
+                    });
+            }
+            // /]]>
+        </script>
+    </ui:define>    
+    <ui:define name="conteudoBase">
+        <div id="localAtualNavegador">Local Atual:</div><div id="divLocalAtual"></div>        
+        <div id="divNavegador"></div>
+        <div id="arquivoSelecionado" >Arquivo Selecionado:</div><div id="divArquivoSelecionado"></div>
+        <div class="clear"></div>
+       
+        <input type="button" id="btnSelecionar" value="Ok" />
+    </ui:define>
+</ui:composition>

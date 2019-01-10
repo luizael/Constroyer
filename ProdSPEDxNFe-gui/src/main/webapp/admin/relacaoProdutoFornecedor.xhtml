@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/layout/masterlayout.xhtml"
+        xmlns="http://www.w3.org/1999/xhtml" 
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:p="http://primefaces.org/ui">
+    <ui:define name="titulo">Relação Produto x Fornecedor</ui:define>    
+    <ui:define name="tituloConteudo">Relação Produto x Fornecedor</ui:define>
+    <ui:define name="head">
+        <h:outputScript name="js/relacaoProdutoFornecedor.js" /> 
+    </ui:define>
+    <ui:define name="conteudo">
+        <h:form>
+            <div id="idFormularioRelacao" >
+                <input type="hidden" id="txtHdnId" />
+                <input type="hidden" id="hdnId" />
+                <table>
+                     <tr>
+                         <td><label>Empresa:</label></td>
+                        <td><input type="text" id="txtEmpresa"/></td>
+                    </tr>
+                    <tr>
+                         <td><label>Produto:</label></td>
+                         <td><input type="text" size="79" id="txtProduto" /></td>
+                    </tr>
+                    <tr>
+                         <td><label>Fornecedor:</label></td>
+                         <td><textArea cols="80" rows="3" id="txtFornecedor"></textArea></td>
+                    </tr>                    
+                    <tr>
+                         <td><label>Código Fornecedor:</label></td>
+                         <td><textArea cols="80" rows="3" id="txtCodFornecedor"></textArea></td>
+                    </tr>                                        
+                </table>
+            </div>
+            <input type="button" value="Novo"  id="btnNovo" onclick="relacao_novo();return false"/> 
+            <table id="jqGrideRelacao" style="z-index: 0" ></table>
+            <div id="jqGrideRelacaoPage" style="z-index: 0"></div>  
+        </h:form>            
+    </ui:define>
+</ui:composition>

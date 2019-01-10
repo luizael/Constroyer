@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+
+<ui:composition template="baselayout.xhtml"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">   
+    
+    <ui:define name="conteudoBase">  
+        <h:outputScript name="js/menu.js" />
+        <div id="containerLogoTipoMenu">
+            <div id="logoMarca"></div>            
+            <c:if test="${request.userPrincipal.name != null}">
+                <div class="containerMenu">
+                    <ul id="menu">
+                        <li>
+                            <a href="javascript: logout();">Sair</a>
+                        </li>
+                        <li>
+                            <a href="#" ><span class="submenu menuIcon cadastroCfop ">Cadastros</span></a>
+                            <ul id="cadastroCfop">
+                                <li><h:outputLink value="#{request.contextPath}/admin/cfopEquivalente.jsf"><span class="menuIcon equivalente" id="menuCadastros">De-Para CFOP</span></h:outputLink></li>
+                                <li><h:outputLink value="#{request.contextPath}/admin/cstEquivalente.jsf"><span class="menuIcon equivalente" id="menuCadastros">De-Para CST</span></h:outputLink></li>
+                                <li><h:outputLink value="#{request.contextPath}/admin/cadastroCFOP.jsf"><span class="menuIcon cadastroCfop" id="menuCadastros">CFOP</span></h:outputLink></li>
+                                <li><h:outputLink value="#{request.contextPath}/admin/cadastroCST.jsf"><span class="menuIcon cadastroCfop" id="menuCadastros">CST</span></h:outputLink></li>
+                                <li><h:outputLink value="#{request.contextPath}/admin/cadastroCliente.jsf"><span class="menuIcon cadastroUsuario" id="menuCadastros">Clientes</span></h:outputLink></li>
+                                <li><h:outputLink value="#{request.contextPath}/admin/cadastroUsuario.jsf"><span class="menuIcon cadastroUsuario" id="menuCadastros">Usuário</span></h:outputLink></li>
+                                <li><h:outputLink value="#{request.contextPath}/admin/relacaoProdutoFornecedor.jsf"><span class="menuIcon cadastroUsuario" id="menuCadastros">Relação Produto x Fornecedor</span></h:outputLink></li>
+                            </ul>
+                        </li>  
+                        <li>
+                            <a href="#"><span class="submenu menuIcon servicos " >Serviços</span></a>
+                            <ul id="servicos">
+                                <li><h:outputLink value="#{request.contextPath}/restrito/requisicaoAtualizacaoInfoFiscal.jsf"><span class="menuIcon servicos">Requisicão</span></h:outputLink></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><span class="submenu menuIcon relatorio " >Relatórios</span></a>
+                            <ul id="relatorio">
+                                <li><h:outputLink value="#{request.contextPath}/restrito/relatorioCFOP.jsf"><span class="menuIcon relatorio">CFOP</span></h:outputLink></li>
+                                <li><h:outputLink value="#{request.contextPath}/restrito/relatorioCreditoDebito.jsf"><span class="menuIcon relatorio">Crédito/Débito</span></h:outputLink></li>
+                                <!--<li><a href="luizao.jsf"><span class="menuIcon teste">Teste</span></a></li>-->
+                            </ul>
+                        </li>
+                        <li>
+                            <h:outputLink value="#{request.contextPath}/restrito/index.jsf"><span class="menuIcon inicio">Início</span></h:outputLink>
+                        </li>
+                    </ul>
+                </div>
+               
+            </c:if>
+            <div class="clear"></div>
+        </div>
+        <div  class="body">
+            <div id="tituloConteudo">
+            <h2><ui:insert name="tituloConteudo" /></h2>
+            </div>
+            <div id="conteudo">
+                <ui:insert name="conteudo" />  
+            </div>
+        </div>
+        <div class="clear"></div>
+        <div id="footer">
+             MixFiscal ProdSPEDxNFe - Versão 13.12.31
+        </div>
+        <form id="frmLogout" action="#{request.contextPath}/logout" method="post">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </form>
+        <script language="javascript" type="text/javascript">
+            function logout() {
+                document.getElementById("frmLogout").submit();
+            }
+             
+        </script>
+    </ui:define>  
+</ui:composition>

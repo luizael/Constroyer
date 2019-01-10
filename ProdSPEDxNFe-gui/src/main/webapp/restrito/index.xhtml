@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<ui:composition template="/layout/masterlayout.xhtml"
+      xmlns="http://www.w3.org/1999/xhtml"          
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:define name="titulo">Processar SPED x NFe</ui:define>  
+    
+    <ui:define name="head">
+        <h:outputScript name="js/JSLINQ.js" />
+        <h:outputScript name="js/index.js" /> 
+
+        <style>
+            .panelGrid td { vertical-align: top; padding-bottom: 5px; text-align: left }
+            .selRadio { margin-top: -5px }
+            .selRadio td { padding: 0px; text-align: left }
+            .label { top: 5px; position: relative}
+            .tf { top: 5px; position: relative}
+            .bt { top: 3px; position: relative}
+        </style>
+        <script language="javascript" type="text/javascript">
+            // <![CDATA[
+            var url = "#{request.contextPath}/ws/asProdForWS/"; 
+            var listaItensPreAsociadosInicial = [];
+            var listaItensPreAssociadosTemp = [];//itens recebidos do banco de dados
+            var listaTeste = [];
+            
+            var mapaItensPreAssociadosTemp = new Map();
+            var listaItensAssociados = [];
+            var listaItensEquivalente = [];//itens checado pelo usuario
+            var itemEquivalente = {"idSped":"","idNFeEquivalente": ""};           
+            var verificarProgresso = false;
+            var objDeRelacionamento;
+            var indexVars = {
+                divBarraProgresso: "#divBarraProgresso",
+                barraProgresso: "#barraProgresso",
+                labelProgresso: "#labelProgesso",
+                descProgesso: "#descProgesso",
+                barraProgressoBtnOk: "#btnBarraProgressoOk"
+            };
+            var IDX_buttons =
+                    [
+                        { 
+                           id:"btnSalvarItensAcossiados", text: "Salvar", click: function () {
+                               showMessage(
+                                "Sucesso", 
+                                "Dados Salvos com Sucesso",
+                                { "Ok": function () {limparMemoria(); $(this).dialog("close"); } });
+                                $( this ).dialog( "close" );
+                            }},
+                        { 
+                            id:"btncancelarItensAcossiados", text: "Cancelar", click: function () {
+                            showMessage("Atenção", "Deseja cancelar a operação?", 
+                                { 
+                                    "Sim": function () {
+                                        $("#txtFiltroSpeed").val("");
+                                        limparMemoria();                                        
+                                        $(this).dialog("close");$("#relacionamentoManual").dialog("close");},
+                                    "Nao":function(){$(this).dialog("close");}  
+                                }
+                            );   
+                        }}
+                    ];  
+                    var IDX_buttons2 =
+                    [
+                        { 
+                           id:"btnSalvarItensAcossiados", text: "Exportar Para Exel", click: function () {
+                                salvarItensAcossiados();
+                                $( this ).dialog( "close" );
+                            }},
+                        { 
+                            id:"btncancelarItensAcossiados", text: "Voltar", click: function () {
+                            showMessage("Atenção", "Deseja voltar a operação?", 
+                                { 
+                                    "Sim": function () {
+                                        $(this).dialog("close");$("#tabelaVinculadosAuto").dialog("close");},
+                                    "Nao":function(){$(this).dialog("close");}  
+                                }
+                            );   
+                        }}
+                    ];  
+            var loadTitulo = "";
+            
+            indexVars.verificarProgresso = false;
+            indexVars.url = url;    
+            
+            $(document).ready(function () {
+                $("#divNav").dialog({
+                    title: "Navegador de Pastas e Arquivos",
+                    autoOpen: false,
+                    width: 770,
+                    height: 595
+                });
+                
+                $("#btProcessar").click(function () {
+                    $("#btProcessar").attr("disabled", "disabled");
+                    $("#btProcessar").attr("value", "Processando ...");
+                    listaItensPreAsociadosInicial = [];
+                    listaItensPreAssociadosTemp = [];//itens recebidos do banco de dados
+                    mapaItensPreAssociadosTemp = new Map();
+                    listaItensAssociados = [];
+                    listaItensEquivalente = [];//itens checado pelo usuario
+                    
+                    processar();        
+                });
+               
+                $("#btVisualizar").click(function () {
+                    //limparMemoria();                    
+                    //listaItensPreAssociadosTemp = listaItensPreAsociadosInicial; 
+                    abrirTela(objDeRelacionamento,url);        
+                    //IDX_filtrarItens("");
+                });
+                
+                $("#relacionamentoManual").dialog({
+                    title: "Relacionar Produtos ",
+                    autoOpen: false,
+                    width: 99+'%',
+                    height: 595,
+                    buttons:IDX_buttons
+                });
+                
+                 $("#tabelaVinculadosAuto").dialog({
+                    title: "Relacionar Produtos ",
+                    autoOpen: false,
+                    width: 99+'%',
+                    height: 595,
+                    buttons:IDX_buttons2
+                });
+                
+                $(indexVars.divBarraProgresso).dialog({
+                    title: "Progresso do Processamento",
+                    autoOpen: false,
+                    width: 400,
+                    height: 200,
+                    modal: true,
+                    buttons: [
+                        {id: "btnBarraProgressoOk", text: "Ok", click: function() {
+                            $( this ).dialog( "close" );
+                            abrirTela(objDeRelacionamento,url);                            
+                        }}
+                    ]
+                });
+                
+                $("#imgCloseErro").click(function(){  
+                    $("#msgErro").slideToggle("fast");
+                });
+                
+                $("#btnNavCaminhoSPED").click(function () {
+                    var caminhoInicial = $("##{indexBackBean.tfCaminhoDirXMLsNFes.clientId.replace(":", "\\\\:")}").val();
+                    
+                    if (caminhoInicial != null && caminhoInicial != undefined && caminhoInicial != "")
+                        caminhoInicial = caminhoInicial.substring(0, caminhoInicial.lastIndexOf("\\"));
+                    abrirNavegador("divNav", "#{indexBackBean.tfCaminhoArquivoSPED.clientId.replace(":", "\\\\:")}", "f", "divNav", caminhoInicial);
+                });
+                
+                $("#btnNavCaminhoDirXMLsNFes").click(function () {
+                    var caminhoInicial = $("##{indexBackBean.tfCaminhoArquivoSPED.clientId.replace(":", "\\\\:")}").val();                    
+                    if (caminhoInicial != null && caminhoInicial != undefined && caminhoInicial != "")
+                           caminhoInicial = caminhoInicial.substring(0, caminhoInicial.lastIndexOf("\\"));
+                    abrirNavegador("divNav", "#{indexBackBean.tfCaminhoDirXMLsNFes.clientId.replace(":", "\\\\:")}", "d", "divNav", caminhoInicial);
+                });    
+                
+                $("#txtFiltroSpeed").keypress(function( event ){
+                    if(event.which == 13)
+                    {
+                        IDX_filtrarItens($(this).val());
+                    }
+                });
+                
+                $(".busca").click(function(){
+                     IDX_filtrarItens($("#txtFiltroSpeed").val());
+                });
+                
+                $('.scroll-pane').jScrollPane();                
+                
+                $(indexVars.barraProgresso).progressbar({
+                    value: 0,                    
+                    complete: function() {
+                        $(indexVars.labelProgresso).text( "Pronto!" );
+                    }
+                }); 
+                //$("#numItensSelecionadosNfe").hide();
+                
+                $(".asc").click(function(){
+                   IDX_ordernar("asc"); 
+                });
+                $(".desc").click(function(){
+                    IDX_ordernar("desc"); 
+                })
+                $("#loading").click(function(){
+                    $(indexVars.divBarraProgresso).dialog("open");
+                });
+            });
+            
+            function processar() {
+                var caminhoSPED = $("##{indexBackBean.tfCaminhoArquivoSPED.clientId.replace(":", "\\\\:")}").val();
+                var caminhoDirXMLs = $("##{indexBackBean.tfCaminhoDirXMLsNFes.clientId.replace(":", "\\\\:")}").val();
+                limparMemoria();                
+                
+                if (caminhoSPED == "" || caminhoDirXMLs == "") {
+                    showMessage(
+                        "Atenção", 
+                        "O caminho do arquivo SPED e o caminho do diretório dos XMLs devem ser informados",
+                        { "Ok": function () { $(this).dialog("close"); } });
+                    $("#btProcessar").removeAttr("disabled");
+                    $("#btProcessar").attr("value", "Processar");
+                    return;           
+                }                
+                
+                $(indexVars.barraProgresso).progressbar("value", 0);
+                $(indexVars.labelProgresso).html("");
+                $(indexVars.descProgesso).html("");
+                $(indexVars.barraProgressoBtnOk).hide();
+                var data = { 
+                    "caminhoSPED": caminhoSPED,
+                    "caminhoDirXMLs": caminhoDirXMLs
+                };    
+                executeWebMethod(
+                    url, 
+                    "processar",
+                    JSON.stringify(data),
+                    function (ret) { 
+                        limparMemoria();
+                        if (ret.result === "Success") {
+                            retObj = ret.object;
+                            objDeRelacionamento=retObj;
+                            console.log(objDeRelacionamento);
+                            $("##{indexBackBean.otResumoProcessamento.clientId.replace(":", "\\\\:")}").html(retObj.resumo);
+                            $('.scroll-pane').jScrollPane();                            
+                            listaItensPreAsociadosInicial = retObj.itensPreAssociados;
+                            listaItensPreAssociadosTemp = retObj.itensPreAssociados;  
+                            mapaItensPreAssociadosTemp = IDX_converterParaMapa(listaItensPreAssociadosTemp);                            
+                            document.title = loadTitulo;
+                            loadTitulo = "";
+                            checarTotalAssociadoAutomaticamente();
+                        } else
+                            showMessage(
+                                "Erro", 
+                                "Houve um erro ao tentar processar os dados. Msg: " + ret.message,
+                                { "Ok": function () {limparMemoria(); $(this).dialog("close"); } });
+                              
+                    },
+                    function () {
+                        $("#btProcessar").removeAttr("disabled");
+                        $("#btProcessar").attr("value", "Processar");
+                        checarProgresso();
+                        indexVars.verificarProgresso = false;
+                        $(indexVars.barraProgressoBtnOk).show();
+                        
+                    });
+                indexVars.verificarProgresso = true;
+                checarProgresso();
+                $(indexVars.divBarraProgresso).dialog("open");
+                //console.log("----->>>> opa");
+            }
+            
+            function salvarItensAcossiados() {
+                var itensManuais = listaItensAssociados;
+                var data = {}; //{ itensManuais };
+                executeWebMethod(
+                    url, 
+                    "processarItensManuais",
+                    JSON.stringify(data),
+                    function (ret) {                        
+                        if (ret.result === "Success") {
+                            showMessage(
+                                "Sucesso", 
+                                "Dados Salvos com Sucesso",
+                                { "Ok": function () {limparMemoria(); $(this).dialog("close"); } });
+                        } else {
+                            showMessage(
+                                "Erro", 
+                                "Houve um erro ao tentar processar os dados. Msg: " + ret.message,
+                                { "Ok": function () { $(this).dialog("close"); } });
+                        }                        
+                    });
+            }    
+            
+           // ]]> 
+        </script>
+    </ui:define>
+    <ui:define name="tituloConteudo">Processar SPED x NFe</ui:define>
+    <ui:define name="conteudo">        
+        <h:form>                
+            <!--<c:if #test="#//{indexBackBean.mensagem != null and indexBackBean.mensagem != ''}">
+                <div id="msgErro"  >
+                    <div id="imgCloseErro"></div>
+                    <h:outputText value="#//{indexBackBean.mensagem}" escape="false" class="msgErro" />
+                </div>
+            </c:if>-->
+            <table>
+                <tr>
+                    <td><h:outputText value="Caminho SPED:" class="label" /></td>
+                    <td>
+                        <h:inputText id="tfCaminhoArquivoSPED" value="#{indexBackBean.caminhoArquivoSPED}" binding="#{indexBackBean.tfCaminhoArquivoSPED}" class="tf" style="width: 500px" />
+                        <input class="bt" id="btnNavCaminhoSPED" type="button" value="Selecionar Arquivo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><h:outputText value="Caminho Diretório XMLs NFes:" class="label" /></td>
+                    <td>
+                        <h:inputText id="tfCaminhoDirXMLsNFes"  value="#{indexBackBean.caminhoDirXMLsNFes}" binding="#{indexBackBean.tfCaminhoDirXMLsNFes}" class="tf" style="width: 500px" />                        
+                        <input class="bt" id="btnNavCaminhoDirXMLsNFes" type="button" value="Selecionar Arquivo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input id="btProcessar" type="button" value="Processar" style="float: right" class="bt" />
+                        <input id="btVisualizar" type="button" value="Relacionar" style="float: right" class="bt" onclick="return false;" />
+                    </td>
+                </tr>
+            </table> 
+            <div id="relacionamentoManual"> 
+                    <div class='modal'>
+                <a class='modal-fechar'>X</a> 
+               <b> Pesquisar Por Chave:</b> <input type="text" size="30" id="campoBuscaTable" name="campoBusca"></input> <span class="linkExel" id="pesquisarNaTable"> Pesquisar</span>
+                 <div class='modal2'>
+                 </div>
+                <div id='delimitarTable'> 
+                <table id="tableDeVinculadosAuto">
+                 <tr id="ls"><td class="cs" id="chave">Chave</td>
+                     <td class="cs" id="descS">Descricao SPED</td>
+                     <td class="cs" id="descN">Descricao XML</td>
+                     <td class="cs" id="seqS">Seq Sped</td>
+                     <td class="cs" id="seqN"> Seq XML</td>
+                     <td class="cs" id="data">Data de Vinculação</td>
+                     <td class="cs" id="filtro">Filtro</td></tr>
+                </table>  
+               </div> 
+              <!--  <span id="linkExelid" class="linkExel"> Exportar Exel</span> -->
+            </div> 
+                
+                
+             <div class='modalMix' id="telaConsumoMix">
+                <a class='modal-fechar' id='fecharTela'>X</a>
+
+             </div>
+                <div id='tela'>
+               <!--  <header id="cabecalho">
+                    <h4 > sped nome campo 1 campo 2 campo 3 campo 4 campo 5 campo6 campo 7 campo 8 campo 9 <span id="verItensManuais">campo 10</span></h4>  
+                </header>
+               
+        <div id="divTeste">
+        <table id="tabelaCabecalhoRelacionamento">
+            <tr><td colspan="8" class="cd">Chave : 5156151565656561515615065561561561</td></tr>
+	<tr><td class="cl">valor totaafafafasfafl C100</td><td class="cd">562,00</td><td class="cl">vtNaXasfasfasfafML aafsasfafa </td><td class="cd">562,00</td><td class="cl">asfasfasfasfasfasvtDaST</td><td class="cd">562,00</td><td class="cl">asfasasfasfasdiferencaC100XML</td><td class="cd">562,00</td></tr>
+	<tr><td class="cl"> asfafasfitensPasfasfaVincular</td><td class="cd">10</td><td class="cl">totalDeasfasfasfItensNaaNota</td><td class="cd">20</td><td class="cl">totalDeItensNoSped</td><td class="cd">10</td><td class="cl">totalDeIasfasftenasfasfsNoSped</td><td class="cd">20</td></tr>
+	</table>
+        <table id="relacionamento">
+            <tr><td class="linhaSped"><label>SPED BLABLABLAblAblABlAblAblAbALBAlALABLALALABLABLBAlABlbAlAALBBLALABlABlABLABlABl</label></td><td id="spanteste"> <b>OK</b></td></tr>
+        <tr><td class="nfelinha"><input type="radio"><label >SPED BLABLABLAblAblABlAblAblAbALBAlALABLALALABLABLBAlABlbAlAALBBLALABlABlABLABlABl</label></input></td></tr>
+        <tr><td class="nfelinha"><input type="radio"><label >SPED BLABLABLAblAblABlAblAblAbALBAlALABLALALABLABLBAlABlbAlAALBBLALABlABlABLABlABl</label></input></td></tr>
+        <tr><td class="nfelinha"><input type="radio"><label >SPED BLABLABLAblAblABlAblAblAbALBAlALABLALALABLABLBAlABlbAlAALBBLALABlABlABLABlABl</label></input></td></tr>
+        <tr><td class="nfelinha"><input type="radio"><label >SPED BLABLABLAblAblABlAblAblAbALBAlALABLALALABLABLBAlABlbAlAALBBLALABlABlABLABlABl</label></input></td></tr>
+	</table> 
+         
+        </div>
+       --> </div>
+                
+                
+                
+              <!-- <div id="tituloResumoProcessamento">Lista de Produtos a Relacionar</div>
+                   private String chave;
+   private BigDecimal vtNoC100;
+   private BigDecimal vtNaXML;
+   private BigDecimal vtDaST;
+   private int itensParaVincular;
+   private int totalDeItensNaNota;
+   private int totalDeItensNoSped;
+   private BigDecimal diferencaC100XML;
+                <div>
+                    <div class="hrAssociados">
+                        <div class="colSped">SPED:<div class="orderby busca"></div><div class="orderby asc"></div><div class="orderby desc"></div><input type="text" id="txtFiltroSpeed"/></div>
+                        <div class="colNFe">NF-e</div>
+                    </div>
+                </div>
+                <div id="listaDeProdutosPreAssociado" ></div>
+                <div id="containerTotal">
+                    <div id="numItens" class="total">Nº de linha: <span id="qtdItens"></span></div>
+                    <div id="numItensSelecionados" class="total">Linhas confirmada: <span id="qtdLinhaConfirmada"></span></div>
+                    <div id="numItensSelecionadosNfe" class="total">Itens NF-e selecionado: <span id="qtdItensNfeSelecionados"></span></div>
+                    <div id="numItensAssociadosAutomaticamente" class="total">Associados Automaticamente: <span id="qtdItensAssociadosAutomaticamente"></span></div>-->  
+             </div>
+            <div id="divBarraProgresso">
+                <div id="barraProgresso"></div>
+                <div id="labelProgesso"></div>
+                <div id="descProgesso"></div>
+            </div>
+            <div id="tituloResumoProcessamento">Resumo do Processamento</div>
+            <div id="resumoProcessamento" class="scroll-pane horizontal-only">
+                 <p style="width: 100%;" id="resumoProcessamentoParagrafo">
+                     <h:outputText id="otResumoProcessamento" value="#{indexBackBean.resumoProcessamento}" binding="#{indexBackBean.otResumoProcessamento}" escape="false" />
+                 </p>
+            </div>
+            <div id="divNav"></div>
+        </h:form>
+    </ui:define>
+</ui:composition>
